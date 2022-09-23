@@ -1,0 +1,11 @@
+{
+  "name": "devlink",
+  "version": "1.0.0",
+  "description": "Social Media application for developers",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ray Bernard",
+  "license": "ISC"
+}
