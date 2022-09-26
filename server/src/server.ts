@@ -1,35 +1,68 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+import { ApolloServer } from 'apollo-server-express';
+import {
+  ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginLandingPageLocalDefault,
+} from 'apollo-server-core';
 import express from 'express';
-import bodyParser from 'body-parser';
+import depthLimit from 'graphql-depth-limit';
+import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
+import http from 'http';
 
-const app = express();
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
 
-app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: process.env.ORIGIN_URL,
-    credentials: false,
-  })
-);
+// Apollo Async
+async function startApolloServer() {
+  const app = express();
 
-// Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('client/build'));
+  app.use(express.json({ limit: '5mb' }));
+  app.use(
+    cors({
+      origin: process.env.ORIGIN_URL,
+      credentials: false,
+    })
+  );
+  app.use(compression());
 
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+    cache: 'bounded',
+    validationRules: [depthLimit(7)],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    ],
+  });
+
+  await server.start();
+
+  // Mount Apollo Middleware
+  server.applyMiddleware({ app });
+
+  // Serve static assets if in production
+  if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('client/build'));
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+  }
+
+  // PORT Setup
+  httpServer.listen(process.env.PORT, function () {
+    console.log(`REST Server running on http://localhost:${process.env.PORT}`);
+    console.log(
+      `GQL Server running on http://localhost:${process.env.PORT}${server.graphqlPath}`
+    );
   });
 }
 
-app.get('/api/', (req, res) => {
-  res.send('it is working');
-});
-
-app.listen(process.env.PORT || 5000, () => {
-  console.log(`app is running on port ${process.env.PORT || 5000}`);
-});
+startApolloServer();
