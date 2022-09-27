@@ -24,7 +24,7 @@ async function startApolloServer() {
   app.use(
     cors({
       origin: process.env.ORIGIN_URL,
-      credentials: false,
+      credentials: true,
     })
   );
   app.use(compression());
@@ -35,6 +35,7 @@ async function startApolloServer() {
     resolvers,
     csrfPrevention: true,
     cache: 'bounded',
+    context: ({ req, res }) => ({ req, res }),
     validationRules: [depthLimit(7)],
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
