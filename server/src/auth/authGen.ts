@@ -1,15 +1,9 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { JWTPayloadType } from '../resolvers/user';
 
-type UserDetails = {
-  _id: string;
-  name: string;
-  email: string;
-  avatar: string;
-};
-
-export const authGen = (userDetails: UserDetails, res: Response) => {
-  const token = jwt.sign(userDetails, process.env.JWT_SECRET!, {
+export const authGen = (JWTPayload: JWTPayloadType, res: Response) => {
+  const token = jwt.sign(JWTPayload, process.env.JWT_SECRET!, {
     expiresIn: '1800s',
   });
 

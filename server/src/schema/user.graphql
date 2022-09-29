@@ -48,7 +48,7 @@ input ResetPWInput {
 
 # Queries
 type Query {
-  current: User!
+  current: ReturnUser!
 }
 
 # Mutations

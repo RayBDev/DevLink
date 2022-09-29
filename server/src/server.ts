@@ -49,19 +49,24 @@ async function startApolloServer() {
     resolvers,
     csrfPrevention: true,
     cache: 'bounded',
+    introspection: process.env.NODE_ENV !== 'production',
     context: ({ req, res }) => {
       // Look at the HTTP Headers for an auth cookie
       const { cookie } = req.headers;
 
-      let user;
-      if (cookie) {
+      if (cookie && cookie?.search('token=') !== -1) {
         // Extract the JWT token from the cookie
         const token = cookie.split('token=')[1].split(';')[0];
 
         // Verify the JWT token and add the user details (or undefined) to the context
-        user = jwt.verify(token, process.env.JWT_SECRET!);
+        try {
+          const user = jwt.verify(token, process.env.JWT_SECRET!);
+          return { req, res, user };
+        } catch (err) {
+          return { req, res };
+        }
       }
-      return { req, res, user };
+      return { req, res };
     },
     validationRules: [depthLimit(7)],
     plugins: [

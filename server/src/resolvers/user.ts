@@ -9,23 +9,41 @@ import {
 } from 'graphql-scalars';
 import { UserInputError } from 'apollo-server-core';
 
-import { authCheck, ReqType } from '../middleware/auth';
+import { ReqType } from '../middleware/auth';
 import { User } from '../models/User';
 import { validateRegisterInput } from '../validation/register';
 import { validateLoginInput } from '../validation/login';
 import { authGen } from '../auth/authGen';
 
-// @desc    Return current user
-// @access  Private
-const current = (
-  _: void,
-  args: any,
-  { req, res }: { req: ReqType; res: Response }
-) => {
-  authCheck(req, res);
-  if (req.user) return req.user;
+export type JWTPayloadType = {
+  _id: string;
+  name: string;
+  email: string;
+  avatar: string;
 };
 
+// @desc    Return current user
+// @access  Private
+const current = async (
+  _: void,
+  args: any,
+  { res, user }: { res: Response; user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+  // Generate JWT and send cookies
+  authGen(
+    {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar!,
+    },
+    res
+  );
+  return user;
+};
+
+// Argument Types Received for Register Endpoint
 export type RegisterArgs = {
   input: {
     name: string;
@@ -51,8 +69,10 @@ const register = async (
 
   const { name, email, password } = args.input;
 
+  // Try to find existing user by email
   const user = await User.findOne({ email });
 
+  // If user is found then throw error otherwise get gravatar image
   if (user) {
     errors.email = 'Email already exists';
     throw new UserInputError('Invalid registration details', { errors });
@@ -64,8 +84,10 @@ const register = async (
       d: 'mm', // Default
     });
 
+    // Hash password
     const hash = await bcrypt.hash(password, 10);
 
+    // Create new user with User Model and add to MongoDB database
     const newUser = new User({
       name,
       email,
@@ -75,6 +97,7 @@ const register = async (
 
     await newUser.save();
 
+    // Generate JWT and send cookies
     authGen(
       {
         _id: newUser.id,
@@ -88,6 +111,7 @@ const register = async (
   }
 };
 
+// Argument Types Received for Login Endpoint
 export type LoginArgs = {
   input: {
     email: string;
@@ -110,17 +134,17 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
   // Find user by email
   const user = await User.findOne({ email });
 
-  // Check for user
+  // Check if user exists and throw error if not
   if (!user) {
     errors.email = 'Email or password incorrect';
     errors.password = 'Email or password incorrect';
     throw new UserInputError('Invalid login details', { errors });
   }
 
-  // Check Password
+  // Check Password against hash
   const isMatch = await bcrypt.compare(password, user.hash);
   if (isMatch) {
-    // Password Matched
+    // If passwords match generate new JWT and respond with cookies
     authGen(
       {
         _id: user.id,
@@ -132,10 +156,19 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
     );
     return user;
   } else {
+    // If password doesn't match hash, throw new error
     errors.email = 'Email or password incorrect';
     errors.password = 'Email or password incorrect';
     throw new UserInputError('Invalid login details', { errors });
   }
+};
+
+// Argument Types Received for Login Endpoint
+export type NewArgs = {
+  input: {
+    email: string;
+    password: string;
+  };
 };
 
 const resolverMap: IResolvers = {
