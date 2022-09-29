@@ -1,0 +1,59 @@
+# Additional Scalars
+scalar DateTime
+scalar EmailAddress
+scalar URL
+
+# Standard Types
+type User {
+  _id: ID!
+  name: String
+  email: EmailAddress
+  hash: String
+  avatar: URL
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type ReturnUser {
+  _id: ID!
+  name: String
+  email: EmailAddress
+  avatar: URL
+}
+
+# Input Types
+input RegisterInput {
+  name: String!
+  email: EmailAddress!
+  password: String!
+  avatar: URL
+}
+
+input RegisterInput {
+  name: String!
+  email: EmailAddress!
+  password: String!
+  password2: String!
+}
+
+input LoginInput {
+  email: EmailAddress!
+  password: String!
+}
+
+input ResetPWInput {
+  _id: ID!
+  password: String!
+}
+
+# Queries
+type Query {
+  current: User!
+}
+
+# Mutations
+type Mutation {
+  register(input: RegisterInput): ReturnUser!
+  login(input: LoginInput): ReturnUser!
+  resetpw(input: ResetPWInput): ReturnUser!
+}

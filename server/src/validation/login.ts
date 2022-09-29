@@ -1,4 +1,5 @@
 import Validator from 'validator';
+import { LoginArgs } from '../resolvers/user';
 import { isEmpty } from './is-empty';
 
 type Errors =
@@ -8,21 +9,22 @@ type Errors =
     }
   | undefined;
 
-export const validateLoginInput = (data) => {
+export const validateLoginInput = (data: LoginArgs) => {
+  let { email, password } = data.input;
   let errors: Errors = {};
 
-  data.email = !isEmpty(data.email) ? data.email : '';
-  data.password = !isEmpty(data.password) ? data.password : '';
+  email = !isEmpty(email) ? email : '';
+  password = !isEmpty(password) ? password : '';
 
-  if (!Validator.isEmail(data.email)) {
+  if (!Validator.isEmail(email)) {
     errors.email = 'Email is invalid';
   }
 
-  if (Validator.isEmpty(data.email)) {
+  if (Validator.isEmpty(email)) {
     errors.email = 'Email field is required';
   }
 
-  if (Validator.isEmpty(data.password)) {
+  if (Validator.isEmpty(password)) {
     errors.password = 'Password field is required';
   }
 
