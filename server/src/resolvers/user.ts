@@ -24,9 +24,6 @@ import {
 
 export type JWTPayloadType = {
   _id: string;
-  name: string;
-  email: string;
-  avatar: string;
 };
 
 // @desc    Return current user
@@ -37,17 +34,22 @@ const current = async (
   { res, user }: { res: Response; user: JWTPayloadType }
 ) => {
   if (!user) throw new UserInputError('User not logged in');
-  // Generate JWT and send cookies
-  authGen(
-    {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatar: user.avatar!,
-    },
-    res
-  );
-  return user;
+
+  try {
+    const userFromDatabase = await User.findOne({ _id: user._id });
+
+    // Generate JWT and send cookies
+    authGen(
+      {
+        _id: user._id,
+      },
+      res
+    );
+
+    return userFromDatabase;
+  } catch (err) {
+    throw new UserInputError('User does not exist');
+  }
 };
 
 // Argument Types Received for Register Mutation
@@ -108,9 +110,6 @@ const register = async (
     authGen(
       {
         _id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        avatar: newUser.avatar!,
       },
       res
     );
@@ -155,9 +154,6 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
     authGen(
       {
         _id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar!,
       },
       res
     );
@@ -221,16 +217,12 @@ export type ResetPWArgs = {
   };
 };
 
-type ResetTokenJWTPayloadType = {
-  _id: string;
-};
-
 // @desc    Reset user password
 // @access  Public
 const resetpw = async (
   _: void,
   args: ResetPWArgs,
-  { user }: { user: ResetTokenJWTPayloadType }
+  { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new UserInputError('Email link invalid or expired');
 
