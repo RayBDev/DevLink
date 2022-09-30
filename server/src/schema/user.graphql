@@ -50,8 +50,8 @@ input ForgetPWInput {
 }
 
 input ResetPWInput {
-  _id: ID!
   password: String!
+  password2: String!
 }
 
 # Queries
@@ -64,5 +64,5 @@ type Mutation {
   register(input: RegisterInput): ReturnUser!
   login(input: LoginInput): ReturnUser!
   forgetpw(input: ForgetPWInput): ReturnResult!
-  resetpw(input: ResetPWInput): ReturnUser!
+  resetpw(input: ResetPWInput): ReturnResult!
 }

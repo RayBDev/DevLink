@@ -1,5 +1,5 @@
 import Validator from 'validator';
-import { ForgetPWArgs } from '../resolvers/user';
+import { ForgetPWArgs, ResetPWArgs } from '../resolvers/user';
 import { isEmpty } from './is-empty';
 
 type EmailErrors =
@@ -35,25 +35,26 @@ export const validateEmailInput = (data: ForgetPWArgs) => {
   };
 };
 
-export const validatePasswordInput = (data) => {
+export const validatePasswordInput = (data: ResetPWArgs) => {
+  let { password, password2 } = data.input;
   let errors: PasswordErrors = {};
 
-  data.password = !isEmpty(data.password) ? data.password : '';
-  data.password2 = !isEmpty(data.password2) ? data.password2 : '';
+  password = !isEmpty(password) ? password : '';
+  password2 = !isEmpty(password2) ? password2 : '';
 
-  if (!Validator.isLength(data.password, { min: 6, max: 32 })) {
+  if (!Validator.isLength(password, { min: 6, max: 32 })) {
     errors.password = 'Password must be at least 6 characters';
   }
 
-  if (Validator.isEmpty(data.password)) {
+  if (Validator.isEmpty(password)) {
     errors.password = 'Password field is required';
   }
 
-  if (!Validator.equals(data.password, data.password2)) {
+  if (!Validator.equals(password, password2)) {
     errors.password2 = 'Passwords must match';
   }
 
-  if (Validator.isEmpty(data.password2)) {
+  if (Validator.isEmpty(password2)) {
     errors.password2 = 'Confirm Password field is required';
   }
 

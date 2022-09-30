@@ -17,7 +17,10 @@ import sendEmail from '../email';
 import { validateRegisterInput } from '../validation/register';
 import { validateLoginInput } from '../validation/login';
 import { authGen } from '../auth/authGen';
-import { validateEmailInput } from '../validation/pwreset';
+import {
+  validateEmailInput,
+  validatePasswordInput,
+} from '../validation/pwreset';
 
 export type JWTPayloadType = {
   _id: string;
@@ -47,7 +50,7 @@ const current = async (
   return user;
 };
 
-// Argument Types Received for Register Endpoint
+// Argument Types Received for Register Mutation
 export type RegisterArgs = {
   input: {
     name: string;
@@ -115,7 +118,7 @@ const register = async (
   }
 };
 
-// Argument Types Received for Login Endpoint
+// Argument Types Received for Login Mutation
 export type LoginArgs = {
   input: {
     email: string;
@@ -167,7 +170,7 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
   }
 };
 
-// Argument Types Received for Login Endpoint
+// Argument Types Received for ForgetPW Mutation
 export type ForgetPWArgs = {
   input: {
     email: string;
@@ -200,7 +203,7 @@ const forgetpw = async (_: void, args: ForgetPWArgs) => {
 
   // The lines below are for a simulated SMTP service. This can be replaced by a real SMTP service for production
   const subject = 'Password reset link - example.com';
-  const message = `Please <a href="http://localhost:3000/resetpw/?reset=${token}">click here</a> to reset your password`;
+  const message = `Please <a href="http://localhost:3000/resetpw/?reset=${token};">click here</a> to reset your password`;
 
   try {
     await sendEmail(user.name, user.email, subject, message);
@@ -208,6 +211,50 @@ const forgetpw = async (_: void, args: ForgetPWArgs) => {
   } catch (err) {
     throw new UserInputError('Email service down');
   }
+};
+
+// Argument Types Received for ForgetPW Mutation
+export type ResetPWArgs = {
+  input: {
+    password: string;
+    password2: string;
+  };
+};
+
+type ResetTokenJWTPayloadType = {
+  _id: string;
+};
+
+// @desc    Reset user password
+// @access  Public
+const resetpw = async (
+  _: void,
+  args: ResetPWArgs,
+  { user }: { user: ResetTokenJWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('Email link invalid or expired');
+
+  const { errors, isValid } = validatePasswordInput(args);
+
+  //Check Validation
+  if (!isValid) {
+    throw new UserInputError('Invalid email', { errors });
+  }
+
+  const { password } = args.input;
+
+  // Hash password
+  const hash = await bcrypt.hash(password, 10);
+
+  const userFromDatabase = await User.findByIdAndUpdate(
+    { _id: user._id },
+    { $set: { hash } },
+    { new: true }
+  );
+
+  if (!userFromDatabase) throw new UserInputError('Invalid email', { errors });
+
+  return { result: 'Success' };
 };
 
 const resolverMap: IResolvers = {
@@ -221,6 +268,7 @@ const resolverMap: IResolvers = {
     register,
     login,
     forgetpw,
+    resetpw,
   },
 };
 
