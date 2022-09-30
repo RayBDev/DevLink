@@ -21,6 +21,10 @@ type ReturnUser {
   avatar: URL
 }
 
+type ReturnResult {
+  result: String
+}
+
 # Input Types
 input RegisterInput {
   name: String!
@@ -41,6 +45,10 @@ input LoginInput {
   password: String!
 }
 
+input ForgetPWInput {
+  email: EmailAddress
+}
+
 input ResetPWInput {
   _id: ID!
   password: String!
@@ -55,5 +63,6 @@ type Query {
 type Mutation {
   register(input: RegisterInput): ReturnUser!
   login(input: LoginInput): ReturnUser!
+  forgetpw(input: ForgetPWInput): ReturnResult!
   resetpw(input: ResetPWInput): ReturnUser!
 }

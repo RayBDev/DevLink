@@ -8,12 +8,16 @@ import {
   URLResolver,
 } from 'graphql-scalars';
 import { UserInputError } from 'apollo-server-core';
+import jwt from 'jsonwebtoken';
 
-import { ReqType } from '../middleware/auth';
 import { User } from '../models/User';
+import sendEmail from '../email';
+
+// Validation Imports
 import { validateRegisterInput } from '../validation/register';
 import { validateLoginInput } from '../validation/login';
 import { authGen } from '../auth/authGen';
+import { validateEmailInput } from '../validation/pwreset';
 
 export type JWTPayloadType = {
   _id: string;
@@ -164,11 +168,46 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
 };
 
 // Argument Types Received for Login Endpoint
-export type NewArgs = {
+export type ForgetPWArgs = {
   input: {
     email: string;
-    password: string;
   };
+};
+
+// @desc    Check user email and send reset password email
+// @access  Public
+const forgetpw = async (_: void, args: ForgetPWArgs) => {
+  const { errors, isValid } = validateEmailInput(args);
+
+  //Check Validation
+  if (!isValid) {
+    throw new UserInputError('Invalid email', { errors });
+  }
+
+  const { email } = args.input;
+
+  const user = await User.findOne({ email });
+
+  // Check for user and return 'Success' if not found
+  if (!user) {
+    return { result: 'Success' };
+  }
+
+  const payload = { _id: user._id }; // Create JWT Payload
+
+  // Sign Token
+  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 600 });
+
+  // The lines below are for a simulated SMTP service. This can be replaced by a real SMTP service for production
+  const subject = 'Password reset link - example.com';
+  const message = `Please <a href="http://localhost:3000/resetpw/?reset=${token}">click here</a> to reset your password`;
+
+  try {
+    await sendEmail(user.name, user.email, subject, message);
+    return { result: 'Success' };
+  } catch (err) {
+    throw new UserInputError('Email service down');
+  }
 };
 
 const resolverMap: IResolvers = {
@@ -181,6 +220,7 @@ const resolverMap: IResolvers = {
   Mutation: {
     register,
     login,
+    forgetpw,
   },
 };
 

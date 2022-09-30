@@ -1,4 +1,5 @@
 import Validator from 'validator';
+import { ForgetPWArgs } from '../resolvers/user';
 import { isEmpty } from './is-empty';
 
 type EmailErrors =
@@ -14,16 +15,17 @@ type PasswordErrors =
     }
   | undefined;
 
-export const validateEmailInput = (data) => {
+export const validateEmailInput = (data: ForgetPWArgs) => {
+  let { email } = data.input;
   let errors: EmailErrors = {};
 
-  data.email = !isEmpty(data.email) ? data.email : '';
+  email = !isEmpty(email) ? email : '';
 
-  if (!Validator.isEmail(data.email)) {
+  if (!Validator.isEmail(email)) {
     errors.email = 'Email is invalid';
   }
 
-  if (Validator.isEmpty(data.email)) {
+  if (Validator.isEmpty(email)) {
     errors.email = 'Email field is required';
   }
 
