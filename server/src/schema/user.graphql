@@ -14,17 +14,6 @@ type User {
   updatedAt: DateTime
 }
 
-type ReturnUser {
-  _id: ID!
-  name: String
-  email: EmailAddress
-  avatar: URL
-}
-
-type ReturnResult {
-  result: String
-}
-
 # Input Types
 input RegisterInput {
   name: String!
@@ -54,6 +43,18 @@ input ResetPWInput {
   password2: String!
 }
 
+# Output Types
+type ReturnUser {
+  _id: ID!
+  name: String
+  email: EmailAddress
+  avatar: URL
+}
+
+type ReturnResult {
+  result: String
+}
+
 # Queries
 type Query {
   current: ReturnUser!
@@ -61,8 +62,8 @@ type Query {
 
 # Mutations
 type Mutation {
-  register(input: RegisterInput): ReturnUser!
-  login(input: LoginInput): ReturnUser!
-  forgetpw(input: ForgetPWInput): ReturnResult!
-  resetpw(input: ResetPWInput): ReturnResult!
+  register(input: RegisterInput!): ReturnUser!
+  login(input: LoginInput!): ReturnUser!
+  forgetpw(input: ForgetPWInput!): ReturnResult!
+  resetpw(input: ResetPWInput!): ReturnResult!
 }

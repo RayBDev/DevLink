@@ -1,0 +1,107 @@
+# Additional Scalars
+scalar DateTime
+scalar URL
+
+# Standard Types
+type Experience {
+  title: String!
+  company: String!
+  location: String
+  from: DateTime!
+  to: DateTime
+  current: boolean!
+  description: String
+}
+
+type Education {
+  school: String!
+  degree: String!
+  fieldofstudy: String!
+  from: DateTime!
+  to: DateTime
+  current: boolean!
+  description: String
+}
+
+type Social {
+  youtube: URL
+  twitter: URL
+  facebook: URL
+  linkedin: URL
+  instagram: URL
+}
+
+type Profile {
+  user: ID
+  handle: String!
+  company: String
+  website: URL
+  location: String
+  status: String!
+  skills: [String]
+  bio: String
+  githubusername: String
+  experience: [Experience!]
+  education: [Education!]
+  social: Social
+}
+
+# Input Types
+input HandleInput {
+  handle: String!
+}
+
+input UserIdInput {
+  user_id: ID!
+}
+
+input ExperienceInput {
+  title: String!
+  company: String!
+  location: String
+  from: DateTime!
+  to: DateTime
+  current: boolean!
+  description: String
+}
+
+input EducationInput {
+  school: String!
+  degree: String!
+  fieldofstudy: String!
+  from: DateTime!
+  to: DateTime
+  current: boolean!
+  description: String
+}
+
+input ExperienceIdInput {
+  exp_id: ID!
+}
+
+input EducationIdInput {
+  edu_id: ID!
+}
+
+# Output Types
+
+type ReturnResult {
+  result: String!
+}
+
+# Queries
+type Query {
+  profile: Profile!
+  allProfiles: [Profile!]!
+  profileByHandle(input: HandleInput!): Profile!
+  profileById(input: IdInput!): Profile!
+}
+
+type Mutation {
+  editProfile(input: Profile!): Profile!
+  editExperience(input: ExperienceInput!): Profile!
+  editEducation(input: EducationInput!): Profile!
+  deleteExperience(input: ExperienceIdInput!): Profile!
+  deleteEducation(input: EducationIdInput!): Profile!
+  deleteProfile: ReturnResult!
+}
