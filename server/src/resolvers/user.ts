@@ -12,19 +12,15 @@ import jwt from 'jsonwebtoken';
 
 import { User } from '../models/User';
 import sendEmail from '../email';
+import { authGen, JWTPayloadType } from '../auth/authGen';
 
 // Validation Imports
 import { validateRegisterInput } from '../validation/register';
 import { validateLoginInput } from '../validation/login';
-import { authGen } from '../auth/authGen';
 import {
   validateEmailInput,
   validatePasswordInput,
 } from '../validation/pwreset';
-
-export type JWTPayloadType = {
-  _id: string;
-};
 
 // @desc    Return current user
 // @access  Private

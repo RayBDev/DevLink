@@ -1,6 +1,9 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { JWTPayloadType } from '../resolvers/user';
+
+export type JWTPayloadType = {
+  _id: string;
+};
 
 export const authGen = (JWTPayload: JWTPayloadType, res: Response) => {
   const token = jwt.sign(JWTPayload, process.env.JWT_SECRET!, {
