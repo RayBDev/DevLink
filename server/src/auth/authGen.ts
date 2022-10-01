@@ -1,8 +1,9 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 
 export type JWTPayloadType = {
-  _id: string;
+  _id: Types.ObjectId;
 };
 
 export const authGen = (JWTPayload: JWTPayloadType, res: Response) => {

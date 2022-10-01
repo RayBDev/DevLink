@@ -1,7 +1,7 @@
 import { Date, model, Schema, Types } from 'mongoose';
 
 interface IProfile {
-  user?: Types.ObjectId;
+  user: Types.ObjectId;
   handle: string;
   company?: string;
   website?: string;

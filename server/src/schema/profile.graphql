@@ -9,7 +9,7 @@ type Experience {
   location: String
   from: DateTime!
   to: DateTime
-  current: boolean!
+  current: Boolean!
   description: String
 }
 
@@ -19,7 +19,7 @@ type Education {
   fieldofstudy: String!
   from: DateTime!
   to: DateTime
-  current: boolean!
+  current: Boolean!
   description: String
 }
 
@@ -41,18 +41,26 @@ type Profile {
   skills: [String]
   bio: String
   githubusername: String
-  experience: [Experience!]
-  education: [Education!]
+  experience: [Experience]
+  education: [Education]
   social: Social
 }
 
 # Input Types
-input HandleInput {
+input ProfileInput {
   handle: String!
-}
-
-input UserIdInput {
-  user_id: ID!
+  company: String
+  website: String
+  location: String
+  status: String!
+  skills: String!
+  bio: String
+  githubusername: String
+  youtube: String
+  twitter: String
+  facebook: String
+  linkedin: String
+  instagram: String
 }
 
 input ExperienceInput {
@@ -61,7 +69,7 @@ input ExperienceInput {
   location: String
   from: DateTime!
   to: DateTime
-  current: boolean!
+  current: Boolean!
   description: String
 }
 
@@ -71,8 +79,24 @@ input EducationInput {
   fieldofstudy: String!
   from: DateTime!
   to: DateTime
-  current: boolean!
+  current: Boolean!
   description: String
+}
+
+input SocialInput {
+  youtube: URL
+  twitter: URL
+  facebook: URL
+  linkedin: URL
+  instagram: URL
+}
+
+input HandleInput {
+  handle: String!
+}
+
+input UserIdInput {
+  user_id: ID!
 }
 
 input ExperienceIdInput {
@@ -94,11 +118,11 @@ type Query {
   profile: Profile!
   allProfiles: [Profile!]!
   profileByHandle(input: HandleInput!): Profile!
-  profileById(input: IdInput!): Profile!
+  profileById(input: UserIdInput!): Profile!
 }
 
 type Mutation {
-  editProfile(input: Profile!): Profile!
+  editProfile(input: ProfileInput!): Profile
   editExperience(input: ExperienceInput!): Profile!
   editEducation(input: EducationInput!): Profile!
   deleteExperience(input: ExperienceIdInput!): Profile!
