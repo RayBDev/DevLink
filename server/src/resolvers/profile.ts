@@ -49,6 +49,7 @@ const allProfiles = async () => {
   return profiles;
 };
 
+// Argument Types Received for ProfileByHandle Mutation
 type ProfileByHandleArgs = {
   input: { handle: string };
 };
@@ -70,9 +71,27 @@ const profileByHandle = async (_: void, args: ProfileByHandleArgs) => {
   return profile;
 };
 
+// Argument Types Received for ProfileById Mutation
+type ProfileByIdArgs = {
+  input: { user_id: Types.ObjectId };
+};
+
 // @desc    Get profile by user ID
 // @access  Public
-const profileById = (_: void, args: any) => {};
+const profileById = async (_: void, args: ProfileByIdArgs) => {
+  const errors: { noprofile?: string } = {};
+
+  const profile = await Profile.findOne({ user: args.input.user_id }).populate(
+    'user',
+    ['name', 'avatar']
+  );
+
+  if (!profile) {
+    errors.noprofile = 'There is no profile for this user';
+    throw new UserInputError('Profile not found', { errors });
+  }
+  return profile;
+};
 
 // Argument Types Received for Edit Profile Mutation
 export type EditProfileArgs = {
@@ -232,6 +251,7 @@ const resolverMap: IResolvers = {
     profile,
     allProfiles,
     profileByHandle,
+    profileById,
   },
   Mutation: {
     editProfile,
