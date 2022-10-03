@@ -1,6 +1,6 @@
 import { IResolvers } from '@graphql-tools/utils';
 import { UserInputError } from 'apollo-server-core';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { DateTimeResolver, URLResolver } from 'graphql-scalars';
 import { ObjectId, Types } from 'mongoose';
 import { JWTPayloadType } from '../auth/authGen';
@@ -19,24 +19,56 @@ const profile = async (
 ) => {
   if (!user) throw new UserInputError('User not logged in');
 
+  const errors: { noprofile?: string } = {};
+
   try {
-    const profile = await Profile.findOne({ user: user._id }).populate('user', [
-      'name',
-      'avatar',
-    ]);
+    const profile = await Profile.findOne({ user: user._id })
+      .populate('user', ['name', 'avatar'])
+      .exec();
+
     return profile;
   } catch (err) {
-    throw new UserInputError('There is no profile for this user');
+    errors.noprofile = 'There is no profile for this user';
+    throw new UserInputError('Profile not found', { errors });
   }
 };
 
 // @desc    Get all profiles
 // @access  Public
-const allProfiles = (_: void, args: any) => {};
+const allProfiles = async () => {
+  const errors: { noprofiles?: string } = {};
+
+  const profiles = await Profile.find()
+    .populate('user', ['name', 'avatar'])
+    .exec();
+
+  if (!profiles) {
+    errors.noprofiles = 'There are no profiles available';
+    throw new UserInputError('No profiles found', { errors });
+  }
+  return profiles;
+};
+
+type ProfileByHandleArgs = {
+  input: { handle: string };
+};
 
 // @desc    Get profile by handle
 // @access  Public
-const profileByHandle = (_: void, args: any) => {};
+const profileByHandle = async (_: void, args: ProfileByHandleArgs) => {
+  const errors: { noprofile?: string } = {};
+
+  const profile = await Profile.findOne({ handle: args.input.handle }).populate(
+    'user',
+    ['name', 'avatar']
+  );
+
+  if (!profile) {
+    errors.noprofile = 'There is no profile for this user';
+    throw new UserInputError('Profile not found', { errors });
+  }
+  return profile;
+};
 
 // @desc    Get profile by user ID
 // @access  Public
@@ -198,6 +230,8 @@ const resolverMap: IResolvers = {
   URL: URLResolver,
   Query: {
     profile,
+    allProfiles,
+    profileByHandle,
   },
   Mutation: {
     editProfile,

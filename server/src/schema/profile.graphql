@@ -31,8 +31,13 @@ type Social {
   instagram: URL
 }
 
+type UserNameAvatar {
+  name: String
+  avatar: URL
+}
+
 type Profile {
-  user: ID
+  user: UserNameAvatar
   handle: String!
   company: String
   website: URL

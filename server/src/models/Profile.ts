@@ -42,7 +42,7 @@ const profileSchema = new Schema<IProfile>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'User',
     },
     handle: {
       type: String,
