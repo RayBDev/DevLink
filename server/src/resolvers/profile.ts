@@ -1,6 +1,5 @@
 import { IResolvers } from '@graphql-tools/utils';
 import { UserInputError } from 'apollo-server-core';
-import { Request, Response } from 'express';
 import { DateResolver, URLResolver } from 'graphql-scalars';
 import { Types } from 'mongoose';
 import { JWTPayloadType } from '../auth/authGen';

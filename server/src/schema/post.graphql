@@ -1,0 +1,61 @@
+# Additional Scalars
+scalar URL
+
+# Standard Types
+type Likes {
+  user: ID!
+}
+
+type Comments {
+  user: ID!
+  text: String!
+  name: String!
+  avatar: URL
+}
+
+type Post {
+  user: ID!
+  text: String!
+  name: String
+  avatar: URL
+  likes: [Likes]
+  comments: [Comments]
+}
+
+# Input Types
+type PostIdInput {
+  post_id: ID!
+}
+
+type PostInput {
+  user: ID!
+  text: String!
+  name: String
+  avatar: URL
+}
+
+type CommentIdInput {
+  comment_id: ID!
+}
+
+# Output Types
+
+type ReturnPostResult {
+  result: String!
+}
+
+# Query Types
+type Query {
+  allPosts: [Post!]!
+  postById(input: PostIdInput!): Post!
+}
+
+# Mutation Types
+type Mutation {
+  createPost(input: PostInput!): Post!
+  deletePost(input: PostIdInput!): ReturnPostResult!
+  likePost(input: PostIdInput!): Post!
+  unLikePost(input: PostIdInput!): Post!
+  commentOnPost(input: PostIdInput!): Post!
+  deleteComment(input: CommentIdInput!): Post!
+}
