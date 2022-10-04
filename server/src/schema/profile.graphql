@@ -18,7 +18,7 @@ type Education {
   degree: String!
   fieldofstudy: String!
   from: Date!
-  to: DateTime
+  to: Date
   current: Boolean!
   description: String
 }
@@ -89,7 +89,7 @@ input ExperienceInput {
   location: String
   from: Date!
   to: Date
-  current: Boolean
+  current: Boolean!
   description: String
 }
 
@@ -99,7 +99,7 @@ input EducationInput {
   fieldofstudy: String!
   from: Date!
   to: Date
-  current: Boolean
+  current: Boolean!
   description: String
 }
 

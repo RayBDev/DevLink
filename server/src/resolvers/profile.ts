@@ -230,9 +230,9 @@ const editExperience = async (
   const { title, company, location, from, to, current, description } =
     args.input;
 
-  if (Validator.isEmpty(to + '') && Validator.isEmpty(current + '')) {
+  if ((!to && current === false) || (to && current === true)) {
     throw new UserInputError(
-      'Experience "To" date OR "Current" option must be selected'
+      "Experience 'To' date OR 'Current' option must be selected"
     );
   }
 
@@ -256,9 +256,57 @@ const editExperience = async (
   }
 };
 
+// Argument Types Received for Edit Education Mutation
+export type EditEducationArgs = {
+  input: {
+    school: string;
+    degree: string;
+    fieldofstudy: string;
+    from: Date;
+    to: Date;
+    current: boolean;
+    description: string;
+  };
+};
+
 // @desc    Add education to profile
 // @access  Private
-const editEducation = (_: void, args: any) => {};
+const editEducation = async (
+  _: void,
+  args: EditEducationArgs,
+  { user }: { user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+
+  const { school, degree, fieldofstudy, from, to, current, description } =
+    args.input;
+
+  if ((!to && current === false) || (to && current === true)) {
+    throw new UserInputError(
+      "Experience 'To' date OR 'Current' option must be selected"
+    );
+  }
+
+  const profile = await Profile.findOne({ user: user._id });
+
+  const newEdu = {
+    school,
+    degree,
+    fieldofstudy,
+    from,
+    to,
+    current,
+    description,
+  };
+
+  // Add to education array
+  if (profile && profile.education) {
+    profile.education.unshift(newEdu);
+    return await profile.save();
+  } else {
+    throw new UserInputError('Invalid education details');
+  }
+};
 
 // @desc    Delete experience from profile
 // @access  Private
@@ -284,6 +332,7 @@ const resolverMap: IResolvers = {
   Mutation: {
     editProfile,
     editExperience,
+    editEducation,
   },
 };
 
