@@ -1,5 +1,5 @@
 # Additional Scalars
-scalar DateTime
+scalar Date
 scalar URL
 
 # Standard Types
@@ -7,8 +7,8 @@ type Experience {
   title: String!
   company: String!
   location: String
-  from: DateTime!
-  to: DateTime
+  from: Date!
+  to: Date
   current: Boolean!
   description: String
 }
@@ -17,7 +17,7 @@ type Education {
   school: String!
   degree: String!
   fieldofstudy: String!
-  from: DateTime!
+  from: Date!
   to: DateTime
   current: Boolean!
   description: String
@@ -36,8 +36,23 @@ type UserNameAvatar {
   avatar: URL
 }
 
-type Profile {
+type ProfileWithUser {
   user: UserNameAvatar
+  handle: String!
+  company: String
+  website: URL
+  location: String
+  status: String!
+  skills: [String]
+  bio: String
+  githubusername: String
+  experience: [Experience]
+  education: [Education]
+  social: Social
+}
+
+type Profile {
+  user: ID!
   handle: String!
   company: String
   website: URL
@@ -72,9 +87,9 @@ input ExperienceInput {
   title: String!
   company: String!
   location: String
-  from: DateTime!
-  to: DateTime
-  current: Boolean!
+  from: Date!
+  to: Date
+  current: Boolean
   description: String
 }
 
@@ -82,9 +97,9 @@ input EducationInput {
   school: String!
   degree: String!
   fieldofstudy: String!
-  from: DateTime!
-  to: DateTime
-  current: Boolean!
+  from: Date!
+  to: Date
+  current: Boolean
   description: String
 }
 
@@ -120,14 +135,14 @@ type ReturnResult {
 
 # Queries
 type Query {
-  profile: Profile!
-  allProfiles: [Profile!]!
-  profileByHandle(input: HandleInput!): Profile!
-  profileById(input: UserIdInput!): Profile!
+  profile: ProfileWithUser!
+  allProfiles: [ProfileWithUser!]!
+  profileByHandle(input: HandleInput!): ProfileWithUser!
+  profileById(input: UserIdInput!): ProfileWithUser!
 }
 
 type Mutation {
-  editProfile(input: ProfileInput!): Profile
+  editProfile(input: ProfileInput!): Profile!
   editExperience(input: ExperienceInput!): Profile!
   editEducation(input: EducationInput!): Profile!
   deleteExperience(input: ExperienceIdInput!): Profile!

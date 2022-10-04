@@ -1,4 +1,4 @@
-import { Date, model, Schema, Types } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 interface IProfile {
   user: Types.ObjectId;
@@ -16,7 +16,7 @@ interface IProfile {
     location?: string;
     from: Date;
     to?: Date;
-    current: boolean;
+    current?: boolean;
     description?: string;
   }[];
   education?: {
@@ -25,7 +25,7 @@ interface IProfile {
     fieldofstudy: string;
     from: Date;
     to?: Date;
-    current: boolean;
+    current?: boolean;
     description?: string;
   }[];
   social?: {

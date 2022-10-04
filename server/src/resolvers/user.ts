@@ -1,5 +1,5 @@
 import { IResolvers } from '@graphql-tools/utils';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import gravatar from 'gravatar';
 import {
@@ -9,18 +9,11 @@ import {
 } from 'graphql-scalars';
 import { UserInputError } from 'apollo-server-core';
 import jwt from 'jsonwebtoken';
+import Validator from 'validator';
 
 import { User } from '../models/User';
 import sendEmail from '../email';
 import { authGen, JWTPayloadType } from '../auth/authGen';
-
-// Validation Imports
-import { validateRegisterInput } from '../validation/register';
-import { validateLoginInput } from '../validation/login';
-import {
-  validateEmailInput,
-  validatePasswordInput,
-} from '../validation/pwreset';
 
 // @desc    Return current user
 // @access  Private
@@ -65,22 +58,22 @@ const register = async (
   args: RegisterArgs,
   { res }: { res: Response }
 ) => {
-  const { errors, isValid } = validateRegisterInput(args);
+  const { name, email, password, password2 } = args.input;
 
-  //Check Validation
-  if (!isValid) {
-    throw new UserInputError('Invalid registration details', { errors });
+  if (
+    !Validator.isLength(name, { min: 2, max: 30 }) ||
+    !Validator.isLength(password, { min: 8, max: 32 }) ||
+    !Validator.equals(password, password2)
+  ) {
+    throw new UserInputError('Invalid registration details');
   }
-
-  const { name, email, password } = args.input;
 
   // Try to find existing user by email
   const user = await User.findOne({ email });
 
   // If user is found then throw error otherwise get gravatar image
   if (user) {
-    errors.email = 'Email already exists';
-    throw new UserInputError('Invalid registration details', { errors });
+    throw new UserInputError('Email already exists');
   } else {
     const avatar = gravatar.url(email, {
       protocol: 'https', // URL Protocol
@@ -124,13 +117,6 @@ export type LoginArgs = {
 // @desc    Login user / Returning JWT Token
 // @access  Public
 const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
-  const { errors, isValid } = validateLoginInput(args);
-
-  //Check Validation
-  if (!isValid) {
-    throw new UserInputError('Invalid login details', { errors });
-  }
-
   const { email, password } = args.input;
 
   // Find user by email
@@ -138,9 +124,7 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
 
   // Check if user exists and throw error if not
   if (!user) {
-    errors.email = 'Email or password incorrect';
-    errors.password = 'Email or password incorrect';
-    throw new UserInputError('Invalid login details', { errors });
+    throw new UserInputError('Invalid login details');
   }
 
   // Check Password against hash
@@ -156,9 +140,7 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
     return user;
   } else {
     // If password doesn't match hash, throw new error
-    errors.email = 'Email or password incorrect';
-    errors.password = 'Email or password incorrect';
-    throw new UserInputError('Invalid login details', { errors });
+    throw new UserInputError('Invalid login details');
   }
 };
 
@@ -172,13 +154,6 @@ export type ForgetPWArgs = {
 // @desc    Check user email and send reset password email
 // @access  Public
 const forgetpw = async (_: void, args: ForgetPWArgs) => {
-  const { errors, isValid } = validateEmailInput(args);
-
-  //Check Validation
-  if (!isValid) {
-    throw new UserInputError('Invalid email', { errors });
-  }
-
   const { email } = args.input;
 
   const user = await User.findOne({ email });
@@ -222,14 +197,11 @@ const resetpw = async (
 ) => {
   if (!user) throw new UserInputError('Email link invalid or expired');
 
-  const { errors, isValid } = validatePasswordInput(args);
+  const { password, password2 } = args.input;
 
-  //Check Validation
-  if (!isValid) {
-    throw new UserInputError('Invalid email', { errors });
+  if (!Validator.equals(password, password2)) {
+    throw new UserInputError('Emails do not match');
   }
-
-  const { password } = args.input;
 
   // Hash password
   const hash = await bcrypt.hash(password, 10);
@@ -240,7 +212,7 @@ const resetpw = async (
     { new: true }
   );
 
-  if (!userFromDatabase) throw new UserInputError('Invalid email', { errors });
+  if (!userFromDatabase) throw new UserInputError('Invalid email');
 
   return { result: 'Success' };
 };

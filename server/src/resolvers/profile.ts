@@ -1,14 +1,12 @@
 import { IResolvers } from '@graphql-tools/utils';
 import { UserInputError } from 'apollo-server-core';
 import { Request, Response } from 'express';
-import { DateTimeResolver, URLResolver } from 'graphql-scalars';
-import { ObjectId, Types } from 'mongoose';
+import { DateResolver, URLResolver } from 'graphql-scalars';
+import { Types } from 'mongoose';
 import { JWTPayloadType } from '../auth/authGen';
+import Validator from 'validator';
 
 import { Profile } from '../models/Profile';
-
-// Validation Imports
-import { validateProfileInput } from '../validation/profile';
 
 // @desc    Get current users profile
 // @access  Private
@@ -19,8 +17,6 @@ const profile = async (
 ) => {
   if (!user) throw new UserInputError('User not logged in');
 
-  const errors: { noprofile?: string } = {};
-
   try {
     const profile = await Profile.findOne({ user: user._id })
       .populate('user', ['name', 'avatar'])
@@ -28,23 +24,19 @@ const profile = async (
 
     return profile;
   } catch (err) {
-    errors.noprofile = 'There is no profile for this user';
-    throw new UserInputError('Profile not found', { errors });
+    throw new UserInputError('No profile found for this user');
   }
 };
 
 // @desc    Get all profiles
 // @access  Public
 const allProfiles = async () => {
-  const errors: { noprofiles?: string } = {};
-
   const profiles = await Profile.find()
     .populate('user', ['name', 'avatar'])
     .exec();
 
   if (!profiles) {
-    errors.noprofiles = 'There are no profiles available';
-    throw new UserInputError('No profiles found', { errors });
+    throw new UserInputError('No profiles found');
   }
   return profiles;
 };
@@ -57,16 +49,13 @@ type ProfileByHandleArgs = {
 // @desc    Get profile by handle
 // @access  Public
 const profileByHandle = async (_: void, args: ProfileByHandleArgs) => {
-  const errors: { noprofile?: string } = {};
-
   const profile = await Profile.findOne({ handle: args.input.handle }).populate(
     'user',
     ['name', 'avatar']
   );
 
   if (!profile) {
-    errors.noprofile = 'There is no profile for this user';
-    throw new UserInputError('Profile not found', { errors });
+    throw new UserInputError('Profile not found');
   }
   return profile;
 };
@@ -79,16 +68,13 @@ type ProfileByIdArgs = {
 // @desc    Get profile by user ID
 // @access  Public
 const profileById = async (_: void, args: ProfileByIdArgs) => {
-  const errors: { noprofile?: string } = {};
-
   const profile = await Profile.findOne({ user: args.input.user_id }).populate(
     'user',
     ['name', 'avatar']
   );
 
   if (!profile) {
-    errors.noprofile = 'There is no profile for this user';
-    throw new UserInputError('Profile not found', { errors });
+    throw new UserInputError('Profile not found');
   }
   return profile;
 };
@@ -121,13 +107,6 @@ const editProfile = async (
 ) => {
   if (!user) throw new UserInputError('User not logged in');
 
-  const { errors, isValid } = validateProfileInput(args);
-
-  // Check Validation
-  if (!isValid) {
-    throw new UserInputError('Invalid profile details', { errors });
-  }
-
   // Destructure all the string arguments we're getting from the client
   let {
     handle,
@@ -144,6 +123,10 @@ const editProfile = async (
     linkedin,
     instagram,
   } = args.input;
+
+  if (!Validator.isLength(handle, { min: 2, max: 40 })) {
+    throw new UserInputError('Handle needs to be between 2 and 4 characters');
+  }
 
   // Set up the expected structure of a Profile (does not include Experience or Education)
   type ProfileFields = {
@@ -202,8 +185,7 @@ const editProfile = async (
       profileByHandle &&
       profileByHandle._id.toString() !== profile._id.toString()
     ) {
-      errors.handle = 'That handle already exists';
-      throw new UserInputError('Invalid profile input', { errors });
+      throw new UserInputError('That handle already exists');
     } else {
       // Update if handle doesn't exist
       return await Profile.findOneAndUpdate(
@@ -216,17 +198,63 @@ const editProfile = async (
     // Check if handle exists
     const profile = await Profile.findOne({ handle: profileFields.handle });
     if (profile) {
-      errors.handle = 'That handle already exists';
-      throw new UserInputError('Invalid profile input', { errors });
+      throw new UserInputError('That handle already exists');
     }
     // Save Profile
     return await new Profile(profileFields).save();
   }
 };
 
+// Argument Types Received for Edit Experience Mutation
+export type EditExperienceArgs = {
+  input: {
+    title: string;
+    company: string;
+    location?: string;
+    from: Date;
+    to?: Date;
+    current?: boolean;
+    description?: string;
+  };
+};
+
 // @desc    Add experience to profile
 // @access  Private
-const editExperience = (_: void, args: any) => {};
+const editExperience = async (
+  _: void,
+  args: EditExperienceArgs,
+  { user }: { user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+
+  const { title, company, location, from, to, current, description } =
+    args.input;
+
+  if (Validator.isEmpty(to + '') && Validator.isEmpty(current + '')) {
+    throw new UserInputError(
+      'Experience "To" date OR "Current" option must be selected'
+    );
+  }
+
+  const profile = await Profile.findOne({ user: user._id });
+  const newExp = {
+    title,
+    company,
+    location,
+    from,
+    to,
+    current,
+    description,
+  };
+
+  if (profile && profile.experience) {
+    // Add to experience array
+    profile.experience.unshift(newExp);
+    return await profile.save();
+  } else {
+    throw new UserInputError('Invalid experience details');
+  }
+};
 
 // @desc    Add education to profile
 // @access  Private
@@ -245,7 +273,7 @@ const deleteEducation = (_: void, args: any) => {};
 const deleteProfile = (_: void, args: any) => {};
 
 const resolverMap: IResolvers = {
-  DateTime: DateTimeResolver,
+  Date: DateResolver,
   URL: URLResolver,
   Query: {
     profile,
@@ -255,6 +283,7 @@ const resolverMap: IResolvers = {
   },
   Mutation: {
     editProfile,
+    editExperience,
   },
 };
 
