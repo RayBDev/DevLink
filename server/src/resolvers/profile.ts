@@ -7,6 +7,7 @@ import { JWTPayloadType } from '../auth/authGen';
 import Validator from 'validator';
 
 import { Profile } from '../models/Profile';
+import { User } from '../models/User';
 
 // @desc    Get current users profile
 // @access  Private
@@ -308,17 +309,85 @@ const editEducation = async (
   }
 };
 
+// Argument Types Received for Delete Experience Mutation
+export type DeleteExperienceArgs = {
+  input: {
+    exp_id: Types.ObjectId;
+  };
+};
+
 // @desc    Delete experience from profile
 // @access  Private
-const deleteExperience = (_: void, args: any) => {};
+const deleteExperience = async (
+  _: void,
+  args: DeleteExperienceArgs,
+  { user }: { user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+
+  const profile = await Profile.findOne({ user: user._id });
+
+  if (profile && profile.experience) {
+    // Get remove index
+    const removeIndex = profile.experience
+      .map((item) => item._id)
+      .indexOf(args.input.exp_id);
+
+    //Splice out of array
+    profile.experience.splice(removeIndex, 1);
+    // Save
+    return await profile.save();
+  }
+};
+
+// Argument Types Received for Delete Education Mutation
+export type DeleteEducationArgs = {
+  input: {
+    exp_id: Types.ObjectId;
+  };
+};
 
 // @desc    Delete education from profile
 // @access  Private
-const deleteEducation = (_: void, args: any) => {};
+const deleteEducation = async (
+  _: void,
+  args: DeleteEducationArgs,
+  { user }: { user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+
+  const profile = await Profile.findOne({ user: user._id });
+
+  if (profile && profile.education) {
+    // Get remove index
+    const removeIndex = profile.education
+      .map((item) => item._id)
+      .indexOf(args.input.exp_id);
+
+    //Splice out of array
+    profile.education.splice(removeIndex, 1);
+    // Save
+    return await profile.save();
+  }
+};
 
 // @desc    Delete user and profile
 // @access  Private
-const deleteProfile = (_: void, args: any) => {};
+const deleteProfile = async (
+  _: void,
+  args: any,
+  { user }: { user: JWTPayloadType }
+) => {
+  if (!user) throw new UserInputError('User not logged in');
+
+  try {
+    await Profile.findOneAndRemove({ user: user._id });
+    await User.findOneAndRemove({ _id: user._id });
+    return { result: 'success' };
+  } catch (err) {
+    throw new UserInputError('Database error. Could not delete user.');
+  }
+};
 
 const resolverMap: IResolvers = {
   Date: DateResolver,
@@ -333,6 +402,9 @@ const resolverMap: IResolvers = {
     editProfile,
     editExperience,
     editEducation,
+    deleteExperience,
+    deleteEducation,
+    deleteProfile,
   },
 };
 

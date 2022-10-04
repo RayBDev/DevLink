@@ -1,4 +1,4 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, Schema, SchemaType, Types } from 'mongoose';
 
 interface IProfile {
   user: Types.ObjectId;
@@ -11,6 +11,7 @@ interface IProfile {
   bio?: string;
   githubusername?: string;
   experience?: {
+    _id?: Types.ObjectId;
     title: string;
     company: string;
     location?: string;
@@ -20,6 +21,7 @@ interface IProfile {
     description?: string;
   }[];
   education?: {
+    _id?: Types.ObjectId;
     school: string;
     degree: string;
     fieldofstudy: string;
