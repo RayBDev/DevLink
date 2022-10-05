@@ -84,9 +84,10 @@ const deletePost = async (
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
 
+  const profile = await Profile.findOne({ user: user._id });
   const post = await Post.findById(args.input.post_id);
 
-  if (post) {
+  if (post && profile) {
     // Check for post owner
     if (post.user.toString() !== user._id.toString()) {
       throw new AuthenticationError('User not authorized');
@@ -101,17 +102,36 @@ const deletePost = async (
 
 // Argument Types Received for LikePost Mutation
 type LikePostArgs = {
-  input: { handle: string };
+  input: { post_id: Types.ObjectId };
 };
 
 // @desc    Like post
 // @access  Private
-const likePost = (
+const likePost = async (
   _: void,
   args: LikePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
+
+  const profile = await Profile.findOne({ user: user._id });
+  const post = await Post.findById(args.input.post_id);
+
+  if (post && profile && post.likes) {
+    if (
+      post.likes.filter((like) => like.user.toString() === user._id.toString())
+        .length > 0
+    ) {
+      throw new UserInputError('User already liked this post');
+    }
+
+    // Add user id to likes array
+    post.likes.unshift({ user: user._id });
+
+    return post.save();
+  } else {
+    throw new UserInputError('Post not found');
+  }
 };
 
 // Argument Types Received for UnlikePost Mutation
@@ -169,6 +189,7 @@ const resolverMap: IResolvers = {
   Mutation: {
     createPost,
     deletePost,
+    likePost,
   },
 };
 
