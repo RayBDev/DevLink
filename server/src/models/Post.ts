@@ -9,6 +9,7 @@ interface IPost {
     user: Types.ObjectId;
   }[];
   comments?: {
+    _id?: Types.ObjectId;
     user: Types.ObjectId;
     text: string;
     name?: string;

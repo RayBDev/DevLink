@@ -45,6 +45,7 @@ input CommentInput {
 }
 
 input CommentIdInput {
+  post_id: ID!
   comment_id: ID!
 }
 

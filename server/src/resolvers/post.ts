@@ -192,13 +192,13 @@ const commentOnPost = async (
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
 
-  let { text, name, avatar } = args.input;
+  let { post_id, text, name, avatar } = args.input;
 
   if (!Validator.isLength(text, { min: 10, max: 300 })) {
     throw new UserInputError('Post must be between 10 and 300 characters');
   }
 
-  const post = await Post.findById(args.input.post_id);
+  const post = await Post.findById(post_id);
 
   if (post && post.comments) {
     const newComment = {
@@ -220,17 +220,43 @@ const commentOnPost = async (
 
 // Argument Types Received for DeleteComment Mutation
 type DeleteCommentArgs = {
-  input: { handle: string };
+  input: { post_id: Types.ObjectId; comment_id: Types.ObjectId };
 };
 
 // @desc    Remove comment from post
 // @access  Private
-const deleteComment = (
+const deleteComment = async (
   _: void,
   args: DeleteCommentArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
+
+  let { post_id, comment_id } = args.input;
+
+  const post = await Post.findById(post_id);
+
+  if (post && post.comments) {
+    if (
+      post.comments.filter(
+        (postComment) => postComment._id!.toString() === comment_id.toString()
+      ).length === 0
+    ) {
+      throw new UserInputError('Comment does not exist');
+    }
+
+    // Get remove index
+    const removeIndex = post.comments
+      .map((comment) => comment._id!.toString())
+      .indexOf(comment_id.toString());
+
+    // Splice comment out of array
+    post.comments.splice(removeIndex, 1);
+
+    return post.save();
+  } else {
+    throw new UserInputError('Post or comment not found');
+  }
 };
 
 const resolverMap: IResolvers = {
@@ -246,6 +272,7 @@ const resolverMap: IResolvers = {
     likePost,
     unlikePost,
     commentOnPost,
+    deleteComment,
   },
 };
 
