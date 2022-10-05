@@ -3,10 +3,19 @@ import { UserInputError } from 'apollo-server-core';
 import { URLResolver } from 'graphql-scalars';
 
 import { JWTPayloadType } from '../auth/authGen';
+import { Post } from '../models/Post';
 
 // @desc    Get All posts
 // @access  Public
-const allPosts = () => {};
+const allPosts = async () => {
+  const posts = await Post.find().sort({ date: -1 });
+
+  if (posts.length < 1) {
+    throw new UserInputError('No posts found');
+  } else {
+    return posts;
+  }
+};
 
 // Argument Types Received for PostById Query
 type PostByIdArgs = {

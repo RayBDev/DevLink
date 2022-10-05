@@ -23,18 +23,18 @@ type Post {
 }
 
 # Input Types
-type PostIdInput {
+input PostIdInput {
   post_id: ID!
 }
 
-type PostInput {
+input PostInput {
   user: ID!
   text: String!
   name: String
   avatar: URL
 }
 
-type CommentIdInput {
+input CommentIdInput {
   comment_id: ID!
 }
 
