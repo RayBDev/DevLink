@@ -1,11 +1,12 @@
 import { IResolvers } from '@graphql-tools/utils';
-import { UserInputError } from 'apollo-server-core';
+import { AuthenticationError, UserInputError } from 'apollo-server-core';
 import { URLResolver, DateTimeResolver } from 'graphql-scalars';
 import { Types } from 'mongoose';
 import Validator from 'validator';
 
 import { JWTPayloadType } from '../auth/authGen';
 import { Post } from '../models/Post';
+import { Profile } from '../models/Profile';
 
 // @desc    Get All posts
 // @access  Public
@@ -71,17 +72,31 @@ const createPost = async (
 
 // Argument Types Received for DeletePost Mutation
 type DeletePostArgs = {
-  input: { handle: string };
+  input: { post_id: Types.ObjectId };
 };
 
 // @desc    Delete post
 // @access  Private
-const deletePost = (
+const deletePost = async (
   _: void,
   args: DeletePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new UserInputError('User not logged in');
+
+  const post = await Post.findById(args.input.post_id);
+
+  if (post) {
+    // Check for post owner
+    if (post.user.toString() !== user._id.toString()) {
+      throw new AuthenticationError('User not authorized');
+    }
+
+    await post.remove();
+    return { result: 'success' };
+  } else {
+    throw new UserInputError('Post not found');
+  }
 };
 
 // Argument Types Received for LikePost Mutation
@@ -153,6 +168,7 @@ const resolverMap: IResolvers = {
   },
   Mutation: {
     createPost,
+    deletePost,
   },
 };
 

@@ -1,7 +1,7 @@
 import { model, Schema, Types } from 'mongoose';
 
 interface IPost {
-  user?: Types.ObjectId;
+  user: Types.ObjectId;
   text: string;
   name?: string;
   avatar?: string;
