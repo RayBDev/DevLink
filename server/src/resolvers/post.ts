@@ -175,17 +175,47 @@ const unlikePost = async (
 
 // Argument Types Received for CommentOnPost Mutation
 type CommentOnPostArgs = {
-  input: { handle: string };
+  input: {
+    post_id: Types.ObjectId;
+    text: string;
+    name?: string;
+    avatar?: string;
+  };
 };
 
 // @desc    Add comment to post
 // @access  Private
-const commentOnPost = (
+const commentOnPost = async (
   _: void,
   args: CommentOnPostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
+
+  let { text, name, avatar } = args.input;
+
+  if (!Validator.isLength(text, { min: 10, max: 300 })) {
+    throw new UserInputError('Post must be between 10 and 300 characters');
+  }
+
+  const post = await Post.findById(args.input.post_id);
+
+  if (post && post.comments) {
+    const newComment = {
+      text,
+      name,
+      avatar,
+      user: user._id,
+    };
+
+    // Add to comments array
+    post.comments.unshift(newComment);
+
+    // Save
+    return post.save();
+  } else {
+    throw new UserInputError('No post found"');
+  }
 };
 
 // Argument Types Received for DeleteComment Mutation
@@ -215,6 +245,7 @@ const resolverMap: IResolvers = {
     deletePost,
     likePost,
     unlikePost,
+    commentOnPost,
   },
 };
 

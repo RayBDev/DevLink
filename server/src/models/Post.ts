@@ -11,7 +11,7 @@ interface IPost {
   comments?: {
     user: Types.ObjectId;
     text: string;
-    name: string;
+    name?: string;
     avatar?: string;
   }[];
 }

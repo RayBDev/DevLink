@@ -37,6 +37,13 @@ input PostInput {
   avatar: URL
 }
 
+input CommentInput {
+  post_id: ID!
+  text: String!
+  name: String!
+  avatar: URL
+}
+
 input CommentIdInput {
   comment_id: ID!
 }
@@ -59,6 +66,6 @@ type Mutation {
   deletePost(input: PostIdInput!): ReturnPostResult!
   likePost(input: PostIdInput!): Post!
   unlikePost(input: PostIdInput!): Post!
-  commentOnPost(input: PostIdInput!): Post!
+  commentOnPost(input: CommentInput!): Post!
   deleteComment(input: CommentIdInput!): Post!
 }
