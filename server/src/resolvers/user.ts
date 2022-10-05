@@ -7,7 +7,7 @@ import {
   EmailAddressResolver,
   URLResolver,
 } from 'graphql-scalars';
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError, AuthenticationError } from 'apollo-server-core';
 import jwt from 'jsonwebtoken';
 import Validator from 'validator';
 
@@ -22,7 +22,7 @@ const current = async (
   args: any,
   { res, user }: { res: Response; user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   try {
     const userFromDatabase = await User.findOne({ _id: user._id });

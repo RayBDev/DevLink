@@ -1,5 +1,5 @@
 import { IResolvers } from '@graphql-tools/utils';
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError, AuthenticationError } from 'apollo-server-core';
 import { DateResolver, URLResolver } from 'graphql-scalars';
 import { Types } from 'mongoose';
 import { JWTPayloadType } from '../auth/authGen';
@@ -15,7 +15,7 @@ const profile = async (
   args: any,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   try {
     const profile = await Profile.findOne({ user: user._id })
@@ -105,7 +105,7 @@ const editProfile = async (
   args: EditProfileArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   // Destructure all the string arguments we're getting from the client
   let {
@@ -225,7 +225,7 @@ const editExperience = async (
   args: EditExperienceArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   const { title, company, location, from, to, current, description } =
     args.input;
@@ -276,7 +276,7 @@ const editEducation = async (
   args: EditEducationArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   const { school, degree, fieldofstudy, from, to, current, description } =
     args.input;
@@ -322,7 +322,7 @@ const deleteExperience = async (
   args: DeleteExperienceArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   const profile = await Profile.findOne({ user: user._id });
 
@@ -353,7 +353,7 @@ const deleteEducation = async (
   args: DeleteEducationArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   const profile = await Profile.findOne({ user: user._id });
 
@@ -377,7 +377,7 @@ const deleteProfile = async (
   args: any,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   try {
     await Profile.findOneAndRemove({ user: user._id });

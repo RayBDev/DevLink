@@ -54,7 +54,7 @@ const createPost = async (
   args: CreatePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   if (!Validator.isLength(args.input.text, { min: 10, max: 300 })) {
     throw new UserInputError('Post must be between 10 and 300 characters');
@@ -82,7 +82,7 @@ const deletePost = async (
   args: DeletePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 
   const post = await Post.findById(args.input.post_id);
 
@@ -111,7 +111,7 @@ const likePost = (
   args: LikePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 };
 
 // Argument Types Received for UnlikePost Mutation
@@ -126,7 +126,7 @@ const unlikePost = (
   args: UnlikePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 };
 
 // Argument Types Received for CommentOnPost Mutation
@@ -141,7 +141,7 @@ const commentOnPost = (
   args: CommentOnPostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 };
 
 // Argument Types Received for DeleteComment Mutation
@@ -156,7 +156,7 @@ const deleteComment = (
   args: DeleteCommentArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('User not logged in');
+  if (!user) throw new AuthenticationError('User not logged in');
 };
 
 const resolverMap: IResolvers = {
