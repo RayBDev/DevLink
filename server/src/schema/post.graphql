@@ -58,7 +58,7 @@ type Mutation {
   createPost(input: PostInput!): Post!
   deletePost(input: PostIdInput!): ReturnPostResult!
   likePost(input: PostIdInput!): Post!
-  unLikePost(input: PostIdInput!): Post!
+  unlikePost(input: PostIdInput!): Post!
   commentOnPost(input: PostIdInput!): Post!
   deleteComment(input: CommentIdInput!): Post!
 }

@@ -136,17 +136,41 @@ const likePost = async (
 
 // Argument Types Received for UnlikePost Mutation
 type UnlikePostArgs = {
-  input: { handle: string };
+  input: { post_id: Types.ObjectId };
 };
 
 // @desc    Unlike post
 // @access  Private
-const unlikePost = (
+const unlikePost = async (
   _: void,
   args: UnlikePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new AuthenticationError('User not logged in');
+
+  const profile = await Profile.findOne({ user: user._id });
+  const post = await Post.findById(args.input.post_id);
+
+  if (post && profile && post.likes) {
+    if (
+      post.likes.filter((like) => like.user.toString() === user._id.toString())
+        .length === 0
+    ) {
+      throw new UserInputError('You have not yet liked this post');
+    }
+
+    // Get remove index
+    const removeIndex = post.likes
+      .map((item) => item.user.toString())
+      .indexOf(user._id.toString());
+
+    // Splice out of array
+    post.likes.splice(removeIndex, 1);
+
+    return post.save();
+  } else {
+    throw new UserInputError('Post not found');
+  }
 };
 
 // Argument Types Received for CommentOnPost Mutation
@@ -190,6 +214,7 @@ const resolverMap: IResolvers = {
     createPost,
     deletePost,
     likePost,
+    unlikePost,
   },
 };
 
