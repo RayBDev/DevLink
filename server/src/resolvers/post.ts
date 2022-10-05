@@ -1,6 +1,8 @@
 import { IResolvers } from '@graphql-tools/utils';
 import { UserInputError } from 'apollo-server-core';
-import { URLResolver } from 'graphql-scalars';
+import { URLResolver, DateTimeResolver } from 'graphql-scalars';
+import { Types } from 'mongoose';
+import Validator from 'validator';
 
 import { JWTPayloadType } from '../auth/authGen';
 import { Post } from '../models/Post';
@@ -19,26 +21,52 @@ const allPosts = async () => {
 
 // Argument Types Received for PostById Query
 type PostByIdArgs = {
-  input: { handle: string };
+  input: { post_id: Types.ObjectId };
 };
 
 // @desc    Get post by id
 // @access  Public
-const postById = (_: void, args: PostByIdArgs) => {};
+const postById = async (_: void, args: PostByIdArgs) => {
+  const post = await Post.findById(args.input.post_id);
+
+  if (!post) {
+    throw new UserInputError('No post found with that ID');
+  } else {
+    return post;
+  }
+};
 
 // Argument Types Received for CreatePost Mutation
 type CreatePostArgs = {
-  input: { handle: string };
+  input: {
+    user: Types.ObjectId;
+    text: string;
+    name?: string;
+    avatar?: string;
+  };
 };
 
 // @desc    Create post
 // @access  Private
-const createPost = (
+const createPost = async (
   _: void,
   args: CreatePostArgs,
   { user }: { user: JWTPayloadType }
 ) => {
   if (!user) throw new UserInputError('User not logged in');
+
+  if (!Validator.isLength(args.input.text, { min: 10, max: 300 })) {
+    throw new UserInputError('Post must be between 10 and 300 characters');
+  }
+
+  const newPost = new Post({
+    text: args.input.text,
+    name: args.input.name,
+    avatar: args.input.avatar,
+    user: user._id,
+  });
+
+  return await newPost.save();
 };
 
 // Argument Types Received for DeletePost Mutation
@@ -117,11 +145,15 @@ const deleteComment = (
 };
 
 const resolverMap: IResolvers = {
+  DateTime: DateTimeResolver,
   URL: URLResolver,
   Query: {
     allPosts,
+    postById,
   },
-  Mutation: {},
+  Mutation: {
+    createPost,
+  },
 };
 
 module.exports = resolverMap;

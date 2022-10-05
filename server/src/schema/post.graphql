@@ -1,4 +1,5 @@
 # Additional Scalars
+scalar DateTime
 scalar URL
 
 # Standard Types
@@ -20,6 +21,8 @@ type Post {
   avatar: URL
   likes: [Likes]
   comments: [Comments]
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 # Input Types
