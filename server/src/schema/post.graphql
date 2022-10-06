@@ -30,6 +30,9 @@ input PostIdInput {
   post_id: ID!
 }
 
+"""
+Post input requires manually setting the name and avatar instead of populating by user id. Allows post to persist if user is deleted.
+"""
 input PostInput {
   user: ID!
   text: String!
@@ -37,6 +40,9 @@ input PostInput {
   avatar: URL
 }
 
+"""
+Comments require manually setting the name and avatar instead of populating by user id. Allows comment to persist if user is deleted.
+"""
 input CommentInput {
   post_id: ID!
   text: String!
@@ -57,16 +63,40 @@ type ReturnPostResult {
 
 # Query Types
 type Query {
+  """
+  Public query that returns all posts
+  """
   allPosts: [Post!]!
+  """
+  Public query that returns a post based on the post id provided
+  """
   postById(input: PostIdInput!): Post!
 }
 
 # Mutation Types
 type Mutation {
+  """
+  Create a post based on the logged in user and the post details provided. Returns the post.
+  """
   createPost(input: PostInput!): Post!
+  """
+  Delete a post when the logged in user provides the post id and the user is the post creator. Returns 'result: success'.
+  """
   deletePost(input: PostIdInput!): ReturnPostResult!
+  """
+  A logged in user can like a post based on the post id provided. Returns the entire post.
+  """
   likePost(input: PostIdInput!): Post!
+  """
+  A logged in user can unlike a previously liked post based on the id provided. Returns the entire post.
+  """
   unlikePost(input: PostIdInput!): Post!
+  """
+  A logged in user can comment on a post based on the post id and comment details provided. Returns the entire post.
+  """
   commentOnPost(input: CommentInput!): Post!
+  """
+  A logged in user can delete a comment they previously created based on the comment id. Returns the entire post.
+  """
   deleteComment(input: CommentIdInput!): Post!
 }

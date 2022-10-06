@@ -52,18 +52,36 @@ type ReturnUser {
 }
 
 type ReturnResult {
+  """
+  Returns result: 'Success' if forgetpw or resetpw is successful
+  """
   result: String
 }
 
 # Queries
 type Query {
+  """
+  Returns the current user along with a refreshed token cookie
+  """
   current: ReturnUser!
 }
 
 # Mutations
 type Mutation {
+  """
+  Register a new user and returns user along with a token cookie
+  """
   register(input: RegisterInput!): ReturnUser!
+  """
+  Log in user and returns the user along with a token cookie
+  """
   login(input: LoginInput!): ReturnUser!
+  """
+  Takes an email address and sends a password reset email
+  """
   forgetpw(input: ForgetPWInput!): ReturnResult!
+  """
+  Accepts the new password and confirmation password along with a signed token to reset the user's password
+  """
   resetpw(input: ResetPWInput!): ReturnResult!
 }

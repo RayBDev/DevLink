@@ -4,11 +4,23 @@ scalar URL
 
 # Standard Types
 type Experience {
+  """
+  The user's job title for this work experience
+  """
   title: String!
   company: String!
   location: String
+  """
+  The date when the user started this job
+  """
   from: Date!
+  """
+  The date when the user left this job
+  """
   to: Date
+  """
+  Is this the user's current job? Boolean
+  """
   current: Boolean!
   description: String
 }
@@ -17,8 +29,17 @@ type Education {
   school: String!
   degree: String!
   fieldofstudy: String!
+  """
+  The date when the user started this education
+  """
   from: Date!
+  """
+  The date when the user ended this education
+  """
   to: Date
+  """
+  Is this the user still going through this education? Boolean
+  """
   current: Boolean!
   description: String
 }
@@ -36,7 +57,13 @@ type UserNameAvatar {
   avatar: URL
 }
 
+"""
+Type for returning a user's profile along with the name and avatar of the user
+"""
 type ProfileWithUser {
+  """
+  The user field is populated using the Mongoose .populate method which injects the name and avatar based on the user ID tied to the profile
+  """
   user: UserNameAvatar
   handle: String!
   company: String
@@ -51,6 +78,9 @@ type ProfileWithUser {
   social: Social
 }
 
+"""
+Type for returning a user profile with the user's ID but without the populated name and avatar of the user
+"""
 type Profile {
   user: ID!
   handle: String!
@@ -84,11 +114,23 @@ input ProfileInput {
 }
 
 input ExperienceInput {
+  """
+  The user's job title for this work experience
+  """
   title: String!
   company: String!
   location: String
+  """
+  The date when the user started this job
+  """
   from: Date!
+  """
+  The date when the user left this job
+  """
   to: Date
+  """
+  Is this the user's current job? Boolean
+  """
   current: Boolean!
   description: String
 }
@@ -97,8 +139,17 @@ input EducationInput {
   school: String!
   degree: String!
   fieldofstudy: String!
+  """
+  The date when the user started this education
+  """
   from: Date!
+  """
+  The date when the user ended this education
+  """
   to: Date
+  """
+  Is the user still going through this education? Boolean
+  """
   current: Boolean!
   description: String
 }
@@ -135,17 +186,47 @@ type ReturnResult {
 
 # Queries
 type Query {
+  """
+  Returns a logged in user's profile
+  """
   profile: ProfileWithUser!
+  """
+  Returns all user profiles in the database
+  """
   allProfiles: [ProfileWithUser!]!
+  """
+  Returns a user's profile based on the user handle provided
+  """
   profileByHandle(input: HandleInput!): ProfileWithUser!
+  """
+  Returns a user's profile based on the user ID provided
+  """
   profileById(input: UserIdInput!): ProfileWithUser!
 }
 
 type Mutation {
+  """
+  Edit or create a new profile based on the logged in user's ID and the profile details provided. Returns the created profile.
+  """
   editProfile(input: ProfileInput!): Profile!
+  """
+  Create a new work experience to add to the logged in user's work experience array. Returns the entire profile.
+  """
   editExperience(input: ExperienceInput!): Profile!
+  """
+  Create a new education to add to the logged in user's education array. Returns the entire profile.
+  """
   editEducation(input: EducationInput!): Profile!
+  """
+  Delete the work experience based on the MONGODB ID for the saved experience. Returns the entire profile.
+  """
   deleteExperience(input: ExperienceIdInput!): Profile!
+  """
+  Delete the education based on the MONGODB ID for the saved education. Returns the entire profile.
+  """
   deleteEducation(input: EducationIdInput!): Profile!
+  """
+  Delete's a user's portfolio based on the logged in user.
+  """
   deleteProfile: ReturnResult!
 }
