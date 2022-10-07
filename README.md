@@ -5,7 +5,7 @@
   DevLink
 </h1>
 
-DevLink is a single page React application that allows users to create a professional developer profile and share their work and experience with others. It allows users to connect with each other with a post/comment system.
+DevLink is a NextJS application that allows users to create a professional developer profile and share their work and experience with others. It also allows users to connect with each other with a post/comment system.
 
 You may use the following credentials if you don't want to register:
 
@@ -16,21 +16,21 @@ Password: 123456
 
 ## :bookmark_tabs: Technologies Used
 
-1.  **HTML5 & CSS3**
+1.  **HTML5, CSS3 + TailwindCSS**
 
-    This responsive layout was created Bootstrap.
+    This responsive layout was created using TailwindCSS.
 
-2.  **REACT**
+2.  **NextJS**
 
-    React was used heavily throughout this project with multiple components. This was to create functional, maintainable, and scalable code.
+    NextJS was used throughout this project with multiple components. This was to create optimized, functional, maintainable, and scalable code.
 
-3.  **NodeJS + Express + MongoDB**
+3.  **NodeJS + Express + GraphQL + MongoDB + Mongoose**
 
-    NodeJS + Express was used for the RESTful API. Over 15 endpoints including signin, register and user info. MongoDB was used for the database.
+    NodeJS + Express + GraphQL was used for the endpoints. Over 15 queries and mutations are included in the schema including signin, register, user info, etc. MongoDB was used for the database along with Mongoose to build out the Schemas.
 
-4.  **Heroku**
+4.  **Railway**
 
-    The application is hosted on Heroku due to the backend requirements.
+    The application is hosted on Railway due to the NodeJS backend requirements.
 
 ## :computer: Getting Started
 
@@ -44,7 +44,7 @@ You may also clone this repo to view the code and run it directly on your local 
 
     ```sh
     # cd to your desired directory
-    git clone https://github.com/Tactic-Apps/Devlink.git
+    git clone https://github.com/RayBDev/DevLink.git
     ```
 
 2.  **Install Dependencies**
@@ -52,36 +52,15 @@ You may also clone this repo to view the code and run it directly on your local 
     Navigate to the root project directory
 
     ```sh
-    npm install
-    ```
-
-    Navigate to the /client directory
-
-    ```sh
-    npm install
+    npm install && npm run client-install
     ```
 
 3.  **Create a Config File**
 
-    You must create a config.json file in the /config folder.
+    You must create a .env file in the root directory as well as the client directory.
     It's recommended you leave the server port on 5000 so that React can run on port 3000.
-    Add your own MONGODB_URI for both "test" and "development".
-    Add your own random JWT_SECRET key.
 
-    ```
-    {
-      "test": {
-        "PORT": 5000,
-        "MONGODB_URI": "mongodb://yourMongoDBURI",
-        "JWT_SECRET": "addKeyHere"
-      },
-        "development": {
-        "PORT": 5000,
-        "MONGODB_URI": "mongodb://yourMongoDBURI",
-        "JWT_SECRET": "addKeyHere"
-      }
-    }
-    ```
+    See `env.example` for example .env files.
 
 4.  **Start the Server**
 
