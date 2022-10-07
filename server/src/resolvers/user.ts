@@ -15,6 +15,7 @@ import { User } from '../models/User';
 import sendEmail from '../email';
 import { authGen, JWTPayloadType } from '../auth/authGen';
 
+// @type    Query
 // @desc    Return current user
 // @access  Private
 const current = async (
@@ -22,8 +23,10 @@ const current = async (
   args: any,
   { res, user }: { res: Response; user: JWTPayloadType }
 ) => {
+  // Check if user is logged in and throw error if not
   if (!user) throw new AuthenticationError('User not logged in');
 
+  // Find the user in the database and return that user along with a refreshed set of cookies
   try {
     const userFromDatabase = await User.findOne({ _id: user._id });
 
@@ -51,6 +54,7 @@ export type RegisterArgs = {
   };
 };
 
+// @type    Mutation
 // @desc    Register a user
 // @access  Public
 const register = async (
@@ -60,6 +64,7 @@ const register = async (
 ) => {
   const { name, email, password, password2 } = args.input;
 
+  // Check the name and password provided by the user
   if (
     !Validator.isLength(name, { min: 2, max: 30 }) ||
     !Validator.isLength(password, { min: 8, max: 32 }) ||
@@ -93,16 +98,16 @@ const register = async (
       hash,
     });
 
-    await newUser.save();
-
-    // Generate JWT and send cookies
+    // Generate JWT and set cookies that will get sent when function returns
     authGen(
       {
         _id: newUser.id,
       },
       res
     );
-    return newUser;
+
+    // Save new user and send cookies
+    return await newUser.save();
   }
 };
 
@@ -114,6 +119,7 @@ export type LoginArgs = {
   };
 };
 
+// @type    Mutation
 // @desc    Login user / Returning JWT Token
 // @access  Public
 const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
@@ -130,7 +136,7 @@ const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
   // Check Password against hash
   const isMatch = await bcrypt.compare(password, user.hash);
   if (isMatch) {
-    // If passwords match generate new JWT and respond with cookies
+    // If passwords match generate new JWT cookies and return user along with cookies
     authGen(
       {
         _id: user.id,
@@ -151,6 +157,7 @@ export type ForgetPWArgs = {
   };
 };
 
+// @type    Mutation
 // @desc    Check user email and send reset password email
 // @access  Public
 const forgetpw = async (_: void, args: ForgetPWArgs) => {
@@ -158,14 +165,15 @@ const forgetpw = async (_: void, args: ForgetPWArgs) => {
 
   const user = await User.findOne({ email });
 
-  // Check for user and return 'Success' if not found
+  // Check for user and return 'Success' if not found but a reset email will not be sent
+  // Client will respond that an email has been sent if email exists in the database
   if (!user) {
     return { result: 'Success' };
   }
 
   const payload = { _id: user._id }; // Create JWT Payload
 
-  // Sign Token
+  // Sign Token with 1Hr expiry
   const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: 600 });
 
   // The lines below are for a simulated SMTP service. This can be replaced by a real SMTP service for production
@@ -188,6 +196,7 @@ export type ResetPWArgs = {
   };
 };
 
+// @type    Mutation
 // @desc    Reset user password
 // @access  Public
 const resetpw = async (
@@ -195,24 +204,28 @@ const resetpw = async (
   args: ResetPWArgs,
   { user }: { user: JWTPayloadType }
 ) => {
-  if (!user) throw new UserInputError('Email link invalid or expired');
+  // Throw an error if the JWT token in the email link has expired
+  if (!user) throw new AuthenticationError('Email link invalid or expired');
 
   const { password, password2 } = args.input;
 
+  // Check if the password and confirmation password match
   if (!Validator.equals(password, password2)) {
     throw new UserInputError('Emails do not match');
   }
 
-  // Hash password
+  // Hash the new password
   const hash = await bcrypt.hash(password, 10);
 
+  // Update the user's password in MongoDB
   const userFromDatabase = await User.findByIdAndUpdate(
     { _id: user._id },
     { $set: { hash } },
     { new: true }
   );
 
-  if (!userFromDatabase) throw new UserInputError('Invalid email');
+  // Throw new error in case the user was deleted before a password can be reset
+  if (!userFromDatabase) throw new UserInputError('User no longer exists');
 
   return { result: 'Success' };
 };
