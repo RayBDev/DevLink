@@ -7,7 +7,7 @@
     "client-install": "npm install --prefix client",
     "start": "node server/dist/server.js",
     "server": "npx nodemon -e ts,js,graphql,env server/src/server.ts",
-    "client": "npm start --prefix client",
+    "client": "npm run dev --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build": "npm install --prefix client && npm run build --prefix client && npx tsc",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha **/**/*.test.js",
