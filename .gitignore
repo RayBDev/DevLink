@@ -16,6 +16,7 @@
 
 # environment
 .env
+/client/.env.local
 
 # misc
 /client/.DS_Store
