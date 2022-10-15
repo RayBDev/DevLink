@@ -13,20 +13,22 @@ module.exports = {
         center: true,
       },
       fontFamily: {
-        sans: ['Lato', ...defaultTheme.fontFamily.sans],
+        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+        heading: ['Nunito', ...defaultTheme.fontFamily.sans],
       },
       fontWeight: {
         thin: 100,
         light: 300,
         normal: 400,
-        bold: 700,
-        black: 900, //Only adding the available Lato font sizes
+        medium: 500,
+        bold: 700, //Only adding the Google Imported font sizes
       },
       colors: {
-        primary: colors.indigo,
-        secondary: colors.yellow,
+        primary: colors.blue[700],
+        secondary: '#34b7f1',
+        tertiary: '4a46fb',
         neutral: colors.gray,
-        warning: colors.red,
+        warning: colors.red[600],
       },
     },
   },
