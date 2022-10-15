@@ -41,9 +41,9 @@ const Home: NextPage = () => {
           </div>
           <div className="grid grid-cols-12 grid-rows-3 gap-y-2">
             <div className="flex justify-center items-center col-span-1 row-span-1 bg-secondary py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <div className="flex items center">
-                <SigninIcon />
-                <p className="-rotate-90">Signin</p>
+              <div className="flex items-center -rotate-90 ">
+                <SigninIcon className="mr-2 w-5 h-5 fill-white" />
+                <h4 className="text-white">Signin</h4>
               </div>
             </div>
             <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
@@ -60,9 +60,9 @@ const Home: NextPage = () => {
               <Signin />
             </div>
             <div className="flex justify-center items-center col-span-1 row-span-1 bg-gray-300 py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <div className="flex items center">
-                <RegisterIcon />
-                <p className="-rotate-90">Register</p>
+              <div className="flex items-center -rotate-90">
+                <RegisterIcon className="mr-2 w-5 h-5 " />
+                <h4 className="">Register</h4>
               </div>
             </div>
           </div>
