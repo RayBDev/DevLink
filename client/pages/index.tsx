@@ -2,9 +2,10 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 
-import hero from '../assets/images/background.png';
 import Signin from '../components/pages/index/Signin';
 
+import hero from '../assets/images/background.png';
+import logo from '../assets/images/logo.png';
 import SigninIcon from '../assets/icons/login.svg';
 import RegisterIcon from '../assets/icons/user-plus.svg';
 
@@ -27,12 +28,23 @@ const Home: NextPage = () => {
             priority={true}
           />
         </div>
+        <div className="fixed top-8 left-0 w-screen">
+          <div className="flex justify-between container px-24">
+            <div className="flex items-center">
+              <div className="h-6 w-6 mr-2">
+                <Image alt="Logo" src={logo} quality={80} priority={true} />
+              </div>
+              <h3 className="text-white">DevLink</h3>
+            </div>
+            <button className="btn btn-ghost">Developers</button>
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-20 px-24">
           <div className="col-span-1 ">
-            <h1 className="mb-10 text-white">
+            <h1 className="mb-12 text-white">
               Welcome to DevLink, the social network built for developers
             </h1>
-            <p className="mb-10 text-white">
+            <p className="mb-12 text-white">
               We are the best and biggest social network with 5 billion active
               users all around the world. Share you thoughts, write blog posts,
               show your favourite music via Stopify, earn badges and much more!
@@ -41,10 +53,10 @@ const Home: NextPage = () => {
           </div>
           <div className="grid grid-cols-12 grid-rows-3 gap-y-2">
             <div className="flex justify-center items-center col-span-1 row-span-1 bg-secondary py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <div className="flex items-center -rotate-90 ">
+              <button className="flex items-center -rotate-90 ">
                 <SigninIcon className="mr-2 w-5 h-5 fill-white" />
                 <h4 className="text-white">Signin</h4>
-              </div>
+              </button>
             </div>
             <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
               <h2 className="capitalize mb-5">Sign in to your account</h2>
@@ -60,10 +72,10 @@ const Home: NextPage = () => {
               <Signin />
             </div>
             <div className="flex justify-center items-center col-span-1 row-span-1 bg-gray-300 py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <div className="flex items-center -rotate-90">
+              <button className="flex items-center -rotate-90">
                 <RegisterIcon className="mr-2 w-5 h-5 " />
                 <h4 className="">Register</h4>
-              </div>
+              </button>
             </div>
           </div>
         </div>
