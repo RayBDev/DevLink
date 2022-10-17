@@ -31,23 +31,23 @@ const Home: NextPage = () => {
         <div className="fixed top-8 left-0 w-screen">
           <div className="flex justify-between container px-24">
             <div className="flex items-center">
-              <div className="h-6 w-6 mr-2">
+              <div className="h-7 w-7 mr-2">
                 <Image alt="Logo" src={logo} quality={80} priority={true} />
               </div>
               <h3 className="text-white">DevLink</h3>
             </div>
-            <button className="btn btn-ghost">Developers</button>
+            <button className="btn btn-ghost">View Developers</button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-20 px-24">
+        <div className="grid grid-cols-2 gap-20 px-24 pt-20">
           <div className="col-span-1 ">
             <h1 className="mb-12 text-white">
               Welcome to DevLink, the social network built for developers
             </h1>
             <p className="mb-12 text-white">
-              We are the best and biggest social network with 5 billion active
-              users all around the world. Share you thoughts, write blog posts,
-              show your favourite music via Stopify, earn badges and much more!
+              We strive to be the best and biggest social network for developers
+              with users all around the world. Create your profile and chat with
+              other developers to share your thoughts and expertise.
             </p>
             <button className="btn btn-ghost">Register Now</button>
           </div>

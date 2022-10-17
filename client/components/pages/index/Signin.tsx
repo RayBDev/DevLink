@@ -1,8 +1,25 @@
 import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useLazyQuery, gql } from '@apollo/client';
+
+import Spinner from '../../UI/Spinner';
+
+// GQL Query
+const LOGIN = gql`
+  query Login($input: LoginInput!) {
+    login(input: $input) {
+      _id
+      name
+      email
+      avatar
+    }
+  }
+`;
 
 const Signin = () => {
+  const [login, { data, loading, error }] = useLazyQuery(LOGIN);
+
   return (
     <>
       <Formik
@@ -14,10 +31,7 @@ const Signin = () => {
           password: Yup.string().required('Required'),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
+          login({ variables: { input: values } });
         }}
       >
         <Form>
@@ -27,7 +41,7 @@ const Signin = () => {
             placeholder="Email"
             className="block w-full bg-gray-100 border-0 border-b-2 border-spacing-y-10 border-gray-300 px-2 py-4 placeholder-gray-400 focus:ring-0 active:bg-gray-100 focus:border-black mb-2"
           />
-          <div className="text-xs text-red-600 hidden">
+          <div className="text-xs text-red-600">
             <ErrorMessage name="email" />
           </div>
 
@@ -37,7 +51,7 @@ const Signin = () => {
             placeholder="Password"
             className="block w-full bg-gray-100 border-0 border-b-2 border-spacing-y-10 border-gray-300 px-2 py-4 placeholder-gray-400 focus:ring-0 focus:bg-gray-100 focus:border-black mb-6"
           />
-          <div className="text-xs text-red-600 hidden">
+          <div className="text-xs text-red-600">
             <ErrorMessage name="password" />
           </div>
 
@@ -50,13 +64,24 @@ const Signin = () => {
             Remember me?
           </label>
           <div className="flex justify-between">
-            <button type="submit" className="btn btn-primary ">
-              Login
-            </button>
-            <button className="text-primary hover:text-secondary transition-colors text-sm">
-              Forgot your password?
-            </button>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                <button type="submit" className="btn btn-primary ">
+                  Login
+                </button>
+                <button className="text-primary hover:text-secondary transition-colors text-sm">
+                  Forgot your password?
+                </button>
+              </>
+            )}
           </div>
+          {error && (
+            <div className="text-xs text-red-600">
+              {error.graphQLErrors[0].message}
+            </div>
+          )}
         </Form>
       </Formik>
     </>
