@@ -119,7 +119,7 @@ export type LoginArgs = {
   };
 };
 
-// @type    Mutation
+// @type    Query
 // @desc    Login user / Returning JWT Token
 // @access  Public
 const login = async (_: void, args: LoginArgs, { res }: { res: Response }) => {
@@ -236,10 +236,10 @@ const resolverMap: IResolvers = {
   EmailAddress: EmailAddressResolver,
   Query: {
     current,
+    login,
   },
   Mutation: {
     register,
-    login,
     forgetpw,
     resetpw,
   },

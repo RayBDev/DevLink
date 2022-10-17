@@ -64,6 +64,10 @@ type Query {
   Returns the current user along with a refreshed token cookie
   """
   current: ReturnUser!
+  """
+  Log in user and returns the user along with a token cookie
+  """
+  login(input: LoginInput!): ReturnUser!
 }
 
 # Mutations
@@ -72,10 +76,6 @@ type Mutation {
   Register a new user and returns user along with a token cookie
   """
   register(input: RegisterInput!): ReturnUser!
-  """
-  Log in user and returns the user along with a token cookie
-  """
-  login(input: LoginInput!): ReturnUser!
   """
   Takes an email address and sends a password reset email
   """
