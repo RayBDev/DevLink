@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Developer Link" src="https://github.com/RayBDev/devconnector/blob/master/client/src/img/logo.png" width="60" />
+    <img alt="Developer Link" src="https://github.com/RayBDev/DevLink/blob/main/client/assets/images/logo.png" width="60" />
 </p>
 <h1 align="center">
   DevLink
