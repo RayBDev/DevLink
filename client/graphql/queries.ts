@@ -1,5 +1,16 @@
 import { gql } from '@apollo/client';
 
+export const LOGIN = gql`
+  query Login($input: LoginInput!) {
+    login(input: $input) {
+      _id
+      name
+      email
+      avatar
+    }
+  }
+`;
+
 export const GET_CURRENT_USER = gql`
   query Current {
     current {
