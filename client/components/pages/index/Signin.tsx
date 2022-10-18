@@ -1,24 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useLazyQuery, gql } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 
 import Spinner from '../../UI/Spinner';
-
-// GQL Query
-const LOGIN = gql`
-  query Login($input: LoginInput!) {
-    login(input: $input) {
-      _id
-      name
-      email
-      avatar
-    }
-  }
-`;
+import { LOGIN } from '../../../graphql/queries';
+import { AuthContext } from '../../../context/authContext';
 
 const Signin = () => {
-  const [login, { data, loading, error }] = useLazyQuery(LOGIN);
+  const { dispatch } = useContext(AuthContext);
+  const [login, { data: user, loading, error }] = useLazyQuery(LOGIN);
+  const router = useRouter();
 
   return (
     <>
@@ -30,8 +23,26 @@ const Signin = () => {
             .required('Required'),
           password: Yup.string().required('Required'),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          login({ variables: { input: values } });
+        onSubmit={async (values) => {
+          await login({
+            variables: {
+              input: { email: values.email, password: values.password },
+            },
+          });
+          if (user) {
+            dispatch({
+              type: 'LOGGED_IN_USER',
+              payload: {
+                user: {
+                  _id: user.login._id,
+                  name: user.login.name,
+                  email: user.login.email,
+                  avatar: user.login.avatar,
+                },
+              },
+            });
+            router.push('/dashboard');
+          }
         }}
       >
         <Form>
@@ -41,7 +52,7 @@ const Signin = () => {
             placeholder="Email"
             className="block w-full bg-gray-100 border-0 border-b-2 border-spacing-y-10 border-gray-300 px-2 py-4 placeholder-gray-400 focus:ring-0 active:bg-gray-100 focus:border-black mb-2"
           />
-          <div className="text-xs text-red-600">
+          <div className="text-xs text-red-600 px-2">
             <ErrorMessage name="email" />
           </div>
 
@@ -49,13 +60,13 @@ const Signin = () => {
             name="password"
             type="password"
             placeholder="Password"
-            className="block w-full bg-gray-100 border-0 border-b-2 border-spacing-y-10 border-gray-300 px-2 py-4 placeholder-gray-400 focus:ring-0 focus:bg-gray-100 focus:border-black mb-6"
+            className="block w-full bg-gray-100 border-0 border-b-2 border-spacing-y-10 border-gray-300 px-2 py-4 placeholder-gray-400 focus:ring-0 focus:bg-gray-100 focus:border-black mb-2"
           />
-          <div className="text-xs text-red-600">
+          <div className="text-xs text-red-600 px-2">
             <ErrorMessage name="password" />
           </div>
 
-          <label className="block mb-10">
+          <label className="block mt-6 mb-10">
             <Field
               name="rememberMe"
               type="checkbox"
@@ -78,8 +89,9 @@ const Signin = () => {
             )}
           </div>
           {error && (
-            <div className="text-xs text-red-600">
-              {error.graphQLErrors[0].message}
+            <div className="text-xs text-red-600 mt-6">
+              {error.graphQLErrors[0]?.message}
+              {error.networkError?.message}
             </div>
           )}
         </Form>
