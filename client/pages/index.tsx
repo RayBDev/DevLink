@@ -3,13 +3,18 @@ import Head from 'next/head';
 import Image from 'next/image';
 
 import Signin from '../components/pages/index/Signin';
+import Register from '../components/pages/index/Register';
 
 import hero from '../assets/images/background.png';
 import logo from '../assets/images/logo.png';
 import SigninIcon from '../assets/icons/login.svg';
 import RegisterIcon from '../assets/icons/user-plus.svg';
+import { useState } from 'react';
 
 const Home: NextPage = () => {
+  type TabSelectionType = 'signin' | 'register';
+  const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
+
   return (
     <div>
       <Head>
@@ -49,17 +54,41 @@ const Home: NextPage = () => {
               with users all around the world. Create your profile and chat with
               other developers to share your thoughts and expertise.
             </p>
-            <button className="btn btn-ghost">Register Now</button>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setTabSelection('register')}
+            >
+              Register Now
+            </button>
           </div>
           <div className="grid grid-cols-12 grid-rows-3 gap-y-2">
-            <div className="flex justify-center items-center col-span-1 row-span-1 bg-secondary py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <button className="flex items-center -rotate-90 ">
-                <SigninIcon className="mr-2 w-5 h-5 fill-white" />
-                <h4 className="text-white">Signin</h4>
+            <div
+              className={`${
+                tabSelection === 'signin' ? 'bg-secondary' : 'bg-gray-300'
+              } flex justify-center items-center col-span-1 transition-colors row-span-1  py-5 rounded-tl-lg rounded-bl-lg p-2`}
+            >
+              <button
+                className="flex items-center -rotate-90"
+                onClick={() => setTabSelection('signin')}
+              >
+                <SigninIcon
+                  className={`${
+                    tabSelection === 'signin' ? 'fill-white' : ''
+                  } mr-2 w-5 h-5 transition-colors`}
+                />
+                <h4
+                  className={`${tabSelection === 'signin' ? 'text-white' : ''}`}
+                >
+                  Signin
+                </h4>
               </button>
             </div>
             <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
-              <h2 className="capitalize mb-5">Sign in to your account</h2>
+              <h2 className="capitalize mb-5">
+                {tabSelection === 'signin'
+                  ? 'Sign in to your account'
+                  : 'Create your new account'}
+              </h2>
               <span className="inline-block h-1 w-2 bg-primary rounded-sm mr-1">
                 &#160;
               </span>
@@ -67,14 +96,33 @@ const Home: NextPage = () => {
                 &#160;
               </span>
               <h4 className="text-gray-500 my-5 font-medium">
-                Login or create new account
+                {tabSelection === 'signin'
+                  ? 'Login or create new account'
+                  : 'User registration now open!'}
               </h4>
-              <Signin />
+              {tabSelection === 'signin' ? <Signin /> : <Register />}
             </div>
-            <div className="flex justify-center items-center col-span-1 row-span-1 bg-gray-300 py-5 rounded-tl-lg rounded-bl-lg p-2">
-              <button className="flex items-center -rotate-90">
-                <RegisterIcon className="mr-2 w-5 h-5 " />
-                <h4 className="">Register</h4>
+            <div
+              className={`${
+                tabSelection === 'register' ? 'bg-secondary' : 'bg-gray-300'
+              } flex justify-center items-center col-span-1 transition-colors row-span-1 py-5 rounded-tl-lg rounded-bl-lg p-2`}
+            >
+              <button
+                className="flex items-center -rotate-90"
+                onClick={() => setTabSelection('register')}
+              >
+                <RegisterIcon
+                  className={`${
+                    tabSelection === 'register' ? 'fill-white' : ''
+                  } mr-2 w-5 h-5 transition-colors `}
+                />
+                <h4
+                  className={`${
+                    tabSelection === 'register' ? 'text-white' : ''
+                  }`}
+                >
+                  Register
+                </h4>
               </button>
             </div>
           </div>
