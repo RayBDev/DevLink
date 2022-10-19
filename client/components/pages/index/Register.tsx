@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useRouter } from 'next/router';
 
 import Spinner from '../../UI/Spinner';
 import { useMutation } from '@apollo/client';
@@ -10,9 +11,18 @@ import { AuthContext } from '../../../context/authContext';
 const Register = () => {
   const { dispatch } = useContext(AuthContext);
   const [register, { data: user, loading, error }] = useMutation(REGISTER);
+  const router = useRouter();
 
   return (
-    <>
+    <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
+      <h2 className="capitalize mb-5">Create your new account'</h2>
+      <span className="inline-block h-1 w-2 bg-primary rounded-sm mr-1">
+        &#160;
+      </span>
+      <span className="inline-block h-1 w-5 bg-primary rounded-sm">&#160;</span>
+      <h4 className="text-gray-500 my-5 font-medium">
+        User registration is now open!
+      </h4>
       <Formik
         initialValues={{ name: '', email: '', password: '', password2: '' }}
         validationSchema={Yup.object({
@@ -71,6 +81,7 @@ const Register = () => {
                 },
               },
             });
+            router.push('/dashboard');
           }
         }}
       >
@@ -133,7 +144,7 @@ const Register = () => {
           )}
         </Form>
       </Formik>
-    </>
+    </div>
   );
 };
 
