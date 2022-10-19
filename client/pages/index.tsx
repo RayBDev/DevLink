@@ -93,7 +93,7 @@ const Home: NextPage = () => {
             ) : tabSelection === 'register' ? (
               <Register />
             ) : (
-              <Forgetpw />
+              <Forgetpw setTabSelection={setTabSelection} />
             )}
 
             {/* Register Tab */}
