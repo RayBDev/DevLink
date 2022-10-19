@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import Signin from '../components/pages/index/Signin';
 import Register from '../components/pages/index/Register';
+import Forgetpw from '../components/pages/index/Forgetpw';
 
 import hero from '../assets/images/background.png';
 import logo from '../assets/images/logo.png';
@@ -11,8 +12,9 @@ import SigninIcon from '../assets/icons/login.svg';
 import RegisterIcon from '../assets/icons/user-plus.svg';
 import { useState } from 'react';
 
+export type TabSelectionType = 'signin' | 'register' | 'forgetpw';
+
 const Home: NextPage = () => {
-  type TabSelectionType = 'signin' | 'register';
   const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
 
   return (
@@ -62,6 +64,7 @@ const Home: NextPage = () => {
             </button>
           </div>
           <div className="grid grid-cols-12 grid-rows-3 gap-y-2">
+            {/* Sign In Tab */}
             <div
               className={`${
                 tabSelection === 'signin' ? 'bg-secondary' : 'bg-gray-300'
@@ -83,25 +86,17 @@ const Home: NextPage = () => {
                 </h4>
               </button>
             </div>
-            <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
-              <h2 className="capitalize mb-5">
-                {tabSelection === 'signin'
-                  ? 'Sign in to your account'
-                  : 'Create your new account'}
-              </h2>
-              <span className="inline-block h-1 w-2 bg-primary rounded-sm mr-1">
-                &#160;
-              </span>
-              <span className="inline-block h-1 w-5 bg-primary rounded-sm">
-                &#160;
-              </span>
-              <h4 className="text-gray-500 my-5 font-medium">
-                {tabSelection === 'signin'
-                  ? 'Login or create new account'
-                  : 'User registration now open!'}
-              </h4>
-              {tabSelection === 'signin' ? <Signin /> : <Register />}
-            </div>
+
+            {/* Content */}
+            {tabSelection === 'signin' ? (
+              <Signin setTabSelection={setTabSelection} />
+            ) : tabSelection === 'register' ? (
+              <Register />
+            ) : (
+              <Forgetpw />
+            )}
+
+            {/* Register Tab */}
             <div
               className={`${
                 tabSelection === 'register' ? 'bg-secondary' : 'bg-gray-300'

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { SetStateAction, useContext } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
@@ -7,14 +7,27 @@ import { useRouter } from 'next/router';
 import Spinner from '../../UI/Spinner';
 import { LOGIN } from '../../../graphql/queries';
 import { AuthContext } from '../../../context/authContext';
+import { TabSelectionType } from '../../../pages';
 
-const Signin = () => {
+type SetTabSelectionType = {
+  setTabSelection: (value: SetStateAction<TabSelectionType>) => void;
+};
+
+const Signin = ({ setTabSelection }: SetTabSelectionType) => {
   const { dispatch } = useContext(AuthContext);
   const [login, { data: user, loading, error }] = useLazyQuery(LOGIN);
   const router = useRouter();
 
   return (
-    <>
+    <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
+      <h2 className="capitalize mb-5">Sign in to your account</h2>
+      <span className="inline-block h-1 w-2 bg-primary rounded-sm mr-1">
+        &#160;
+      </span>
+      <span className="inline-block h-1 w-5 bg-primary rounded-sm">&#160;</span>
+      <h4 className="text-gray-500 my-5 font-medium">
+        Login or create new account
+      </h4>
       <Formik
         initialValues={{ email: '', password: '', rememberMe: true }}
         validationSchema={Yup.object({
@@ -82,7 +95,10 @@ const Signin = () => {
                 <button type="submit" className="btn btn-primary ">
                   Sign In
                 </button>
-                <button className="text-primary hover:text-secondary transition-colors text-sm">
+                <button
+                  className="text-primary hover:text-secondary transition-colors text-sm"
+                  onClick={() => setTabSelection('forgetpw')}
+                >
                   Forgot your password?
                 </button>
               </>
@@ -96,7 +112,7 @@ const Signin = () => {
           )}
         </Form>
       </Formik>
-    </>
+    </div>
   );
 };
 
