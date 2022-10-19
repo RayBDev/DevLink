@@ -211,7 +211,7 @@ const resetpw = async (
 
   // Check if the password and confirmation password match
   if (!Validator.equals(password, password2)) {
-    throw new UserInputError('Emails do not match');
+    throw new UserInputError('Passwords do not match');
   }
 
   // Hash the new password
@@ -237,10 +237,10 @@ const resolverMap: IResolvers = {
   Query: {
     current,
     login,
+    forgetpw,
   },
   Mutation: {
     register,
-    forgetpw,
     resetpw,
   },
 };

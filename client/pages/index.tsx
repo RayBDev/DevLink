@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             <button className="btn btn-ghost">View Developers</button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-20 px-24 pt-20">
+        <div className="grid grid-cols-2 items-center gap-20 px-24 pt-20">
           <div className="col-span-1 ">
             <h1 className="mb-12 text-white">
               Welcome to DevLink, the social network built for developers

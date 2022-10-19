@@ -80,7 +80,7 @@ const Signin = () => {
             ) : (
               <>
                 <button type="submit" className="btn btn-primary ">
-                  Login
+                  Sign In
                 </button>
                 <button className="text-primary hover:text-secondary transition-colors text-sm">
                   Forgot your password?
