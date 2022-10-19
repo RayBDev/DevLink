@@ -21,3 +21,11 @@ export const GET_CURRENT_USER = gql`
     }
   }
 `;
+
+export const FORGET_PW = gql`
+  query Forgetpw($input: ForgetPWInput!) {
+    forgetpw(input: $input) {
+      result
+    }
+  }
+`;
