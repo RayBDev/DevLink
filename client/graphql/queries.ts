@@ -29,3 +29,11 @@ export const FORGET_PW = gql`
     }
   }
 `;
+
+export const GET_HANDLE = gql`
+  query Profile {
+    profile {
+      handle
+    }
+  }
+`;
