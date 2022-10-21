@@ -10,12 +10,23 @@ type PropsType = {
   pageTitle: string;
   /** Page Description for SEO Purposes */
   pageDescription: string;
+  /** Remove default page title compilation and solely use provided title */
+  disableTitleCompilation?: boolean;
 };
 
-const Layout = ({ children, pageTitle, pageDescription }: PropsType) => {
+const Layout = ({
+  children,
+  pageTitle,
+  pageDescription,
+  disableTitleCompilation = false,
+}: PropsType) => {
   return (
     <>
-      <Seo pageTitle={pageTitle} pageDescription={pageDescription} />
+      <Seo
+        pageTitle={pageTitle}
+        pageDescription={pageDescription}
+        disableTitleCompilation={disableTitleCompilation}
+      />
       <Navbar />
       <main>{children}</main>
       <Footer />
