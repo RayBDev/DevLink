@@ -81,7 +81,7 @@ const Register = () => {
                 },
               },
             });
-            router.push('/dashboard');
+            router.push(`/${user.login._id}/dashboard`);
           }
         }}
       >

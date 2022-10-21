@@ -5,7 +5,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
 import Spinner from '../../UI/Spinner';
-import { LOGIN } from '../../../graphql/queries';
+import { GET_HANDLE, LOGIN } from '../../../graphql/queries';
 import { AuthContext } from '../../../context/authContext';
 import { TabSelectionType } from '../../../pages';
 
@@ -15,7 +15,10 @@ type SetTabSelectionType = {
 
 const Signin = ({ setTabSelection }: SetTabSelectionType) => {
   const { dispatch } = useContext(AuthContext);
-  const [login, { data: user, loading, error }] = useLazyQuery(LOGIN);
+  const [login, { data: user, loading: loadingUser, error }] =
+    useLazyQuery(LOGIN);
+  const [getHandle, { data: profile, loading: loadingHandle }] =
+    useLazyQuery(GET_HANDLE);
   const router = useRouter();
 
   return (
@@ -43,6 +46,8 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
             },
           });
           if (user) {
+            await getHandle();
+
             dispatch({
               type: 'LOGGED_IN_USER',
               payload: {
@@ -54,7 +59,13 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
                 },
               },
             });
-            router.push('/dashboard');
+            router.push(
+              `/${
+                profile?.profile?.handle
+                  ? profile.profile.handle
+                  : user.login._id
+              }/dashboard`
+            );
           }
         }}
       >
@@ -88,7 +99,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
             Remember me?
           </label>
           <div className="flex justify-between">
-            {loading ? (
+            {loadingUser || loadingHandle ? (
               <Spinner />
             ) : (
               <>
