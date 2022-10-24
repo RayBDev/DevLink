@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/router';
 
 import Spinner from '../../UI/Spinner';
 import { useMutation } from '@apollo/client';
@@ -10,8 +9,25 @@ import { AuthContext } from '../../../context/authContext';
 
 const Register = () => {
   const { dispatch } = useContext(AuthContext);
-  const [register, { data: user, loading, error }] = useMutation(REGISTER);
-  const router = useRouter();
+  const [register, { data: user, loading: loadingUser, error }] =
+    useMutation(REGISTER);
+
+  // When component mounts, monitor the fetched user data and dispatch those details when the submit button is clicked
+  useEffect(() => {
+    if (user && !loadingUser) {
+      dispatch({
+        type: 'LOGGED_IN_USER',
+        payload: {
+          user: {
+            _id: user.login._id,
+            name: user.login.name,
+            email: user.login.email,
+            avatar: user.login.avatar,
+          },
+        },
+      });
+    }
+  }, [user, loadingUser]);
 
   return (
     <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
@@ -70,21 +86,6 @@ const Register = () => {
               },
             },
           });
-
-          if (user) {
-            dispatch({
-              type: 'LOGGED_IN_USER',
-              payload: {
-                user: {
-                  _id: user.login._id,
-                  name: user.login.name,
-                  email: user.login.email,
-                  avatar: user.login.avatar,
-                },
-              },
-            });
-            router.push(`/${user.login._id}/dashboard`);
-          }
         }}
       >
         <Form>
@@ -128,7 +129,7 @@ const Register = () => {
             <ErrorMessage name="password2" />
           </div>
 
-          {loading ? (
+          {loadingUser ? (
             <Spinner />
           ) : (
             <>
