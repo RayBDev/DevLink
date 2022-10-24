@@ -76,8 +76,10 @@ const AuthProvider = ({
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [getUser, { data: user, loading: loadingUser }] =
     useLazyQuery(GET_CURRENT_USER);
-  const [getHandle, { data: profile, loading: loadingHandle }] =
-    useLazyQuery(GET_HANDLE);
+  const [
+    getHandle,
+    { data: profile, loading: loadingHandle, error: loadingHandleError },
+  ] = useLazyQuery(GET_HANDLE);
 
   useEffect(() => {
     // Check if user is signed in when app loads by the availability of the checkToken
@@ -101,7 +103,7 @@ const AuthProvider = ({
             },
           },
         });
-      } else if (user && !loadingUser && !loadingHandle) {
+      } else if (user && loadingHandleError && !loadingUser && !loadingHandle) {
         dispatch({
           type: 'LOGGED_IN_USER',
           payload: {
