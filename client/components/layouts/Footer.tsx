@@ -8,7 +8,7 @@ import TwitterIcon from '../../assets/icons/twitter.svg';
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-primary py-20 flex flex-col justify-center items-center">
+    <footer className="w-full bg-primary py-10 sm:py-20 flex flex-col justify-center items-center">
       {/* Logo */}
       <div className="flex items-center mb-5">
         <div className="h-7 w-7 mr-2">
