@@ -30,9 +30,7 @@ const Navbar = () => {
           name="search"
         />
       </div>
-      <button className="text-sm font-bold text-white transition-colors duration-300 font-sans hover:text-secondary">
-        Find Friends
-      </button>
+      <button className="btn btn-text">Find Friends</button>
 
       {/* User */}
       <div className="flex items-center ml-auto">
