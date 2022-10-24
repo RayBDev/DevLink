@@ -116,7 +116,7 @@ const AuthProvider = ({
           },
         });
       } else {
-        // If checkToken exists but httpOnly with the actual token does not ie. server returns error, dispatch a blank state
+        // If checkToken exists but httpOnly cookie with the actual token does not ie. user not found and server returns gql error, dispatch a blank state
         dispatch({
           type: 'LOGGED_IN_USER',
           payload: initialState,
