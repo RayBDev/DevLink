@@ -29,21 +29,24 @@
 
 @layer components {
   .btn {
-    @apply py-3 px-8 text-sm font-bold rounded-md transition-colors duration-300 font-sans focus:outline-none;
+    @apply py-3 text-sm font-bold rounded-md transition-colors duration-300 font-sans focus:outline-none;
   }
 
   /*These primary colors were created in the theme in tailwind.config.js*/
   .btn-primary {
-    @apply bg-primary text-white hover:bg-secondary focus:ring-primary disabled:bg-white disabled:text-primary disabled:cursor-not-allowed;
+    @apply px-8 bg-primary text-white hover:bg-secondary focus:ring-primary disabled:bg-white disabled:text-primary disabled:cursor-not-allowed;
   }
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-primary focus:ring-secondary disabled:bg-white disabled:text-secondary disabled:cursor-not-allowed;
+    @apply px-8 bg-secondary text-white hover:bg-primary focus:ring-secondary disabled:bg-white disabled:text-secondary disabled:cursor-not-allowed;
   }
   .btn-warning {
-    @apply bg-warning text-white hover:bg-warning focus:ring-warning disabled:bg-white disabled:text-warning disabled:cursor-not-allowed;
+    @apply px-8 bg-warning text-white hover:bg-warning focus:ring-warning disabled:bg-white disabled:text-warning disabled:cursor-not-allowed;
   }
   .btn-ghost {
-    @apply bg-transparent text-white border-2 border-white hover:bg-secondary hover:text-gray-100 focus:ring-secondary;
+    @apply px-8 bg-transparent text-white border-2 border-white hover:bg-secondary hover:text-gray-100 focus:ring-secondary;
+  }
+  .btn-text {
+    @apply px-2 text-white hover:text-secondary;
   }
 }
 
