@@ -1,8 +1,7 @@
-import React, { SetStateAction, useContext } from 'react';
+import React, { SetStateAction, useContext, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
 
 import Spinner from '../../UI/Spinner';
 import { GET_HANDLE, LOGIN } from '../../../graphql/queries';
@@ -17,9 +16,39 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
   const { dispatch } = useContext(AuthContext);
   const [login, { data: user, loading: loadingUser, error }] =
     useLazyQuery(LOGIN);
-  const [getHandle, { data: profile, loading: loadingHandle }] =
-    useLazyQuery(GET_HANDLE);
-  const router = useRouter();
+  const [
+    getHandle,
+    { data: profile, loading: loadingHandle, error: loadingHandleError },
+  ] = useLazyQuery(GET_HANDLE);
+
+  useEffect(() => {
+    if (user && profile && !loadingUser && !loadingHandle) {
+      dispatch({
+        type: 'LOGGED_IN_USER',
+        payload: {
+          user: {
+            _id: user.login._id,
+            name: user.login.name,
+            email: user.login.email,
+            avatar: user.login.avatar,
+            handle: profile.profile.handle,
+          },
+        },
+      });
+    } else if (user && loadingHandleError && !loadingUser && !loadingHandle) {
+      dispatch({
+        type: 'LOGGED_IN_USER',
+        payload: {
+          user: {
+            _id: user.login._id,
+            name: user.login.name,
+            email: user.login.email,
+            avatar: user.login.avatar,
+          },
+        },
+      });
+    }
+  }, [user, profile, loadingUser, loadingUser]);
 
   return (
     <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
@@ -45,28 +74,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
               input: { email: values.email, password: values.password },
             },
           });
-          if (user) {
-            await getHandle();
-
-            dispatch({
-              type: 'LOGGED_IN_USER',
-              payload: {
-                user: {
-                  _id: user.login._id,
-                  name: user.login.name,
-                  email: user.login.email,
-                  avatar: user.login.avatar,
-                },
-              },
-            });
-            router.push(
-              `/${
-                profile?.profile?.handle
-                  ? profile.profile.handle
-                  : user.login._id
-              }/dashboard`
-            );
-          }
+          await getHandle();
         }}
       >
         <Form>

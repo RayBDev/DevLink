@@ -22,11 +22,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const apolloClient = useApollo(pageProps);
 
   return (
-    <AuthProvider>
-      <ApolloProvider client={apolloClient}>
-        {getLayout(<Component {...pageProps} />)}
-      </ApolloProvider>
-    </AuthProvider>
+    <ApolloProvider client={apolloClient}>
+      <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+    </ApolloProvider>
   );
 }
 

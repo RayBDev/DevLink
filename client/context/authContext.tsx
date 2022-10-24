@@ -1,8 +1,8 @@
 import React, { useReducer, createContext, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 
-import { GET_CURRENT_USER } from '../graphql/queries';
+import { GET_CURRENT_USER, GET_HANDLE } from '../graphql/queries';
 
 type ActionPayload = {
   /** The user's name, email and avatar URL provided by the dispatched action's payload */
@@ -11,6 +11,7 @@ type ActionPayload = {
     name: string;
     email: string;
     avatar: string;
+    handle?: string;
   };
 };
 
@@ -28,6 +29,7 @@ type State = {
     name: string;
     email: string;
     avatar: string;
+    handle?: string;
   };
 };
 
@@ -48,6 +50,7 @@ const initialState: State = {
     name: '',
     email: '',
     avatar: '',
+    handle: '',
   },
 };
 
@@ -71,6 +74,10 @@ const AuthProvider = ({
   children,
 }: ComponentWithChildProps): React.ReactElement => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const [getUser, { data: user, loading: loadingUser }] =
+    useLazyQuery(GET_CURRENT_USER);
+  const [getHandle, { data: profile, loading: loadingHandle }] =
+    useLazyQuery(GET_HANDLE);
 
   useEffect(() => {
     // Check if user is signed in when app loads by the availability of the checkToken
@@ -78,9 +85,23 @@ const AuthProvider = ({
 
     // If token exists, get the user data from the backend and dispatch user details
     if (checkTokenExists) {
-      const { data: user } = useQuery(GET_CURRENT_USER);
+      getUser();
+      getHandle();
 
-      if (user) {
+      if (user && profile && !loadingUser && !loadingHandle) {
+        dispatch({
+          type: 'LOGGED_IN_USER',
+          payload: {
+            user: {
+              _id: user.current._id,
+              name: user.current.name,
+              email: user.current.email,
+              avatar: user.current.avatar,
+              handle: profile.profile.handle,
+            },
+          },
+        });
+      } else if (user && !loadingUser && !loadingHandle) {
         dispatch({
           type: 'LOGGED_IN_USER',
           payload: {
@@ -100,7 +121,7 @@ const AuthProvider = ({
         });
       }
     }
-  }, []);
+  }, [user, profile, loadingUser, loadingHandle]);
 
   const value = { state, dispatch };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

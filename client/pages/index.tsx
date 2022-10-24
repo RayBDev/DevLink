@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import type { NextPage } from 'next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import Seo from '../components/layouts/Seo';
 import Signin from '../components/pages/index/Signin';
@@ -11,11 +12,20 @@ import hero from '../assets/images/background.png';
 import logo from '../assets/images/logo.png';
 import SigninIcon from '../assets/icons/login.svg';
 import RegisterIcon from '../assets/icons/user-plus.svg';
+import { AuthContext } from '../context/authContext';
 
 export type TabSelectionType = 'signin' | 'register' | 'forgetpw';
 
 const Home: NextPage = () => {
   const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
+  const { state } = useContext(AuthContext);
+  const router = useRouter();
+
+  if (state.user._id) {
+    router.push(
+      `/${state.user.handle ? state.user.handle : state.user._id}/dashboard`
+    );
+  }
 
   return (
     <div>
