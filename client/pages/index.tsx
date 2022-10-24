@@ -21,6 +21,8 @@ const Home: NextPage = () => {
   const { state } = useContext(AuthContext);
   const router = useRouter();
 
+  // Push the user to the dashboard if they exist in the state
+  // This state was dispatched in Signin, Register, and AuthContext components
   if (state.user._id) {
     router.push(
       `/${state.user.handle ? state.user.handle : state.user._id}/dashboard`

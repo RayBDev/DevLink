@@ -21,6 +21,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
     { data: profile, loading: loadingHandle, error: loadingHandleError },
   ] = useLazyQuery(GET_HANDLE);
 
+  // When component mounts, monitor the fetched user data and dispatch those details when the submit button is clicked
   useEffect(() => {
     if (user && profile && !loadingUser && !loadingHandle) {
       dispatch({
@@ -69,6 +70,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
           password: Yup.string().required('Required'),
         })}
         onSubmit={async (values) => {
+          // Run queries to get the user details and user handle
           await login({
             variables: {
               input: { email: values.email, password: values.password },

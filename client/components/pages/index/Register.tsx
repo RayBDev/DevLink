@@ -23,6 +23,8 @@ const Register = () => {
       <h4 className="text-gray-500 my-5 font-medium">
         User registration is now open!
       </h4>
+
+      {/* Yup validation for name length, email, password complexity, and whether password2 = password */}
       <Formik
         initialValues={{ name: '', email: '', password: '', password2: '' }}
         validationSchema={Yup.object({
