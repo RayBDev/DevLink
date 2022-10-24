@@ -49,7 +49,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
         },
       });
     }
-  }, [user, profile, loadingUser, loadingUser]);
+  }, [user, profile, loadingUser, loadingHandle]);
 
   return (
     <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
