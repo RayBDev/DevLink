@@ -48,7 +48,8 @@ const Footer = () => {
         </li>
       </ul>
       <p className="text-gray-300 text-sm">
-        © Copyright {new Date().getFullYear}, DevLink Inc. All Rights Reserved.
+        © Copyright {new Date().getFullYear()}, DevLink Inc. All Rights
+        Reserved.
       </p>
     </footer>
   );
