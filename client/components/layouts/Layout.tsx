@@ -28,7 +28,7 @@ const Layout = ({
         disableTitleCompilation={disableTitleCompilation}
       />
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-28">{children}</main>
       <Footer />
     </>
   );
