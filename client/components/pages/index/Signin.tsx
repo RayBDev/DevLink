@@ -25,7 +25,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
   useEffect(() => {
     if (user && profile && !loadingUser && !loadingHandle) {
       dispatch({
-        type: 'LOGGED_IN_USER',
+        type: 'LOG_IN_USER',
         payload: {
           user: {
             _id: user.login._id,
@@ -38,7 +38,7 @@ const Signin = ({ setTabSelection }: SetTabSelectionType) => {
       });
     } else if (user && loadingHandleError && !loadingUser && !loadingHandle) {
       dispatch({
-        type: 'LOGGED_IN_USER',
+        type: 'LOG_IN_USER',
         payload: {
           user: {
             _id: user.login._id,

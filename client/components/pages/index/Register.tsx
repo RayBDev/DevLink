@@ -16,7 +16,7 @@ const Register = () => {
   useEffect(() => {
     if (user && !loadingUser) {
       dispatch({
-        type: 'LOGGED_IN_USER',
+        type: 'LOG_IN_USER',
         payload: {
           user: {
             _id: user.login._id,

@@ -15,12 +15,17 @@ type ActionPayload = {
   };
 };
 
-type Action = {
-  /** The action type that tells the Reducer what action needs to be performed before returning the new state */
-  type: 'LOGGED_IN_USER' | 'LOGGED_OUT_USER';
-  /** The action payload that gives the Reducer the necessary data that it needs to incorporate to return the new state */
-  payload: ActionPayload;
-};
+type Action =
+  | {
+      /** The action type that tells the Reducer what action needs to be performed before returning the new state */
+      type: 'LOG_IN_USER';
+      /** The action payload that gives the Reducer the necessary data that it needs to incorporate to return the new state */
+      payload: ActionPayload;
+    }
+  | {
+      /** The action type that tells the Reducer what action needs to be performed before returning the new state */
+      type: 'LOG_OUT_USER';
+    };
 
 type State = {
   /** The user's name, email and avatar URL that lives in the state */
@@ -33,16 +38,6 @@ type State = {
   };
 };
 
-// reducer
-const authReducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'LOGGED_IN_USER':
-      return { ...state, user: action.payload.user };
-    default:
-      return state;
-  }
-};
-
 // state
 const initialState: State = {
   user: {
@@ -52,6 +47,18 @@ const initialState: State = {
     avatar: '',
     handle: '',
   },
+};
+
+// reducer
+const authReducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'LOG_IN_USER':
+      return { ...state, user: action.payload.user };
+    case 'LOG_OUT_USER':
+      return { ...initialState };
+    default:
+      return state;
+  }
 };
 
 type ContextType = {
@@ -92,7 +99,7 @@ const AuthProvider = ({
 
       if (user && profile && !loadingUser && !loadingHandle) {
         dispatch({
-          type: 'LOGGED_IN_USER',
+          type: 'LOG_IN_USER',
           payload: {
             user: {
               _id: user.current._id,
@@ -105,7 +112,7 @@ const AuthProvider = ({
         });
       } else if (user && loadingHandleError && !loadingUser && !loadingHandle) {
         dispatch({
-          type: 'LOGGED_IN_USER',
+          type: 'LOG_IN_USER',
           payload: {
             user: {
               _id: user.current._id,
@@ -118,8 +125,7 @@ const AuthProvider = ({
       } else {
         // If checkToken exists but httpOnly cookie with the actual token does not ie. user not found and server returns gql error, dispatch a blank state
         dispatch({
-          type: 'LOGGED_IN_USER',
-          payload: initialState,
+          type: 'LOG_OUT_USER',
         });
       }
     }
