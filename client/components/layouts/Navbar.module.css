@@ -12,12 +12,20 @@
 .navigation__icon {
   position: relative;
   margin-top: 1.5rem;
+  width: 1.6rem;
+}
+
+.navigation__icon::before {
+  width: 1.9rem;
+}
+
+.navigation__icon::after {
+  width: 1.3rem;
 }
 
 .navigation__icon,
 .navigation__icon::before,
 .navigation__icon::after {
-  width: 1.9rem;
   height: 2px;
   background-color: #ffffff;
   display: inline-block;
@@ -27,7 +35,7 @@
 .navigation__icon::after {
   content: '';
   position: absolute;
-  left: 0;
+  right: 0;
   transition: all 0.2s;
 }
 .navigation__icon::before {
@@ -35,14 +43,6 @@
 }
 .navigation__icon::after {
   top: 0.6rem;
-}
-
-.navigation__button:hover .navigation__icon::before {
-  top: -0.8rem;
-}
-
-.navigation__button:hover .navigation__icon::after {
-  top: 0.8rem;
 }
 
 .navigation__checkbox:checked + .navigation__button .navigation__icon {
@@ -57,4 +57,5 @@
 .navigation__checkbox:checked + .navigation__button .navigation__icon::after {
   top: 0;
   transform: rotate(-135deg);
+  width: 1.9rem;
 }
