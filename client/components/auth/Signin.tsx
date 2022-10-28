@@ -3,10 +3,10 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
 
-import Spinner from '../../UI/Spinner';
-import { GET_HANDLE, LOGIN } from '../../../graphql/queries';
-import { AuthContext } from '../../../context/authContext';
-import { TabSelectionType } from '../../../pages';
+import Spinner from '../UI/Spinner';
+import { GET_HANDLE, LOGIN } from '../../graphql/queries';
+import { AuthContext } from '../../context/authContext';
+import { TabSelectionType } from './Auth';
 
 type SetTabSelectionType = {
   setTabSelection: (value: SetStateAction<TabSelectionType>) => void;

@@ -2,10 +2,10 @@ import React, { useContext, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-import Spinner from '../../UI/Spinner';
+import Spinner from '../UI/Spinner';
 import { useMutation } from '@apollo/client';
-import { REGISTER } from '../../../graphql/mutations';
-import { AuthContext } from '../../../context/authContext';
+import { REGISTER } from '../../graphql/mutations';
+import { AuthContext } from '../../context/authContext';
 
 const Register = () => {
   const { dispatch } = useContext(AuthContext);

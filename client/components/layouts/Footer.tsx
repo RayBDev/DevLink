@@ -9,7 +9,7 @@ import TwitterIcon from '../../assets/icons/twitter.svg';
 
 const Footer = () => {
   return (
-    <footer className="h-72 relative">
+    <footer className="h-72 relative -z-10">
       {/* Footer Background */}
       <div className="absolute top-0 left-0 bottom-0 right-0">
         <Image

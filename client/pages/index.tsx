@@ -4,17 +4,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import Seo from '../components/layouts/Seo';
-import Signin from '../components/pages/index/Signin';
-import Register from '../components/pages/index/Register';
-import Forgetpw from '../components/pages/index/Forgetpw';
 
 import hero from '../assets/images/background.png';
 import logo from '../assets/images/logo.png';
-import SigninIcon from '../assets/icons/login.svg';
-import RegisterIcon from '../assets/icons/user-plus.svg';
 import { AuthContext } from '../context/authContext';
-
-export type TabSelectionType = 'signin' | 'register' | 'forgetpw';
+import Auth, { TabSelectionType } from '../components/auth/Auth';
 
 const Home: NextPage = () => {
   const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
@@ -77,64 +71,7 @@ const Home: NextPage = () => {
               Register Now
             </button>
           </div>
-          <div className="grid grid-cols-12 grid-rows-3 gap-y-2">
-            {/* Sign In Tab */}
-            <div
-              className={`${
-                tabSelection === 'signin' ? 'bg-secondary' : 'bg-gray-300'
-              } flex justify-center items-center col-span-1 transition-colors row-span-1  py-5 rounded-tl-lg rounded-bl-lg p-2`}
-            >
-              <button
-                className="flex items-center -rotate-90"
-                onClick={() => setTabSelection('signin')}
-              >
-                <SigninIcon
-                  className={`${
-                    tabSelection === 'signin' ? 'fill-white' : ''
-                  } mr-2 w-5 h-5 transition-colors`}
-                />
-                <h4
-                  className={`${tabSelection === 'signin' ? 'text-white' : ''}`}
-                >
-                  Signin
-                </h4>
-              </button>
-            </div>
-
-            {/* Content */}
-            {tabSelection === 'signin' ? (
-              <Signin setTabSelection={setTabSelection} />
-            ) : tabSelection === 'register' ? (
-              <Register />
-            ) : (
-              <Forgetpw setTabSelection={setTabSelection} />
-            )}
-
-            {/* Register Tab */}
-            <div
-              className={`${
-                tabSelection === 'register' ? 'bg-secondary' : 'bg-gray-300'
-              } flex justify-center items-center col-span-1 transition-colors row-span-1 py-5 rounded-tl-lg rounded-bl-lg p-2`}
-            >
-              <button
-                className="flex items-center -rotate-90"
-                onClick={() => setTabSelection('register')}
-              >
-                <RegisterIcon
-                  className={`${
-                    tabSelection === 'register' ? 'fill-white' : ''
-                  } mr-2 w-5 h-5 transition-colors `}
-                />
-                <h4
-                  className={`${
-                    tabSelection === 'register' ? 'text-white' : ''
-                  }`}
-                >
-                  Register
-                </h4>
-              </button>
-            </div>
-          </div>
+          <Auth selectTab={tabSelection} />
         </div>
       </main>
     </div>
