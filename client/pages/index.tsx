@@ -32,8 +32,8 @@ const Home: NextPage = () => {
               other developers to share your thoughts and expertise."
         disableTitleCompilation={true}
       />
-      <main className="container flex items-center justify-center w-screen h-screen ">
-        <div className="fixed h-screen w-screen overflow-hidden -z-10 ">
+      <main className="">
+        <div className="fixed h-screen w-screen top-0 -z-10 ">
           <Image
             alt="Hero"
             src={hero}
@@ -43,35 +43,43 @@ const Home: NextPage = () => {
             priority={true}
           />
         </div>
-        <div className="fixed top-8 left-0 w-screen">
-          <div className="flex justify-between container px-24">
-            <div className="flex items-center">
-              <div className="h-7 w-7 mr-2">
-                <Image alt="Logo" src={logo} quality={80} priority={true} />
-              </div>
-              <h3 className="text-white">DevLink</h3>
+
+        <div className="flex justify-between container pt-10 pb-20 sm:pb-16 lg:pb-0 px-5 sm:px-10 xl:px-24 w-full">
+          <div className="flex items-center">
+            <div className="h-7 w-7 mr-2">
+              <Image alt="Logo" src={logo} quality={80} priority={true} />
             </div>
-            <button className="btn btn-ghost">View Developers</button>
+            <h3 className="text-white">DevLink</h3>
           </div>
+          <button className="btn btn-ghost px-3 py-2 text-xs sm:px-8 sm:py-3 sm:text-sm">
+            View Developers
+          </button>
         </div>
-        <div className="grid grid-cols-2 items-center gap-20 px-24 pt-20">
-          <div className="col-span-1 ">
-            <h1 className="mb-12 text-white">
-              Welcome to DevLink, the social network built for developers
-            </h1>
-            <p className="mb-12 text-white">
-              We strive to be the best and biggest social network for developers
-              with users all around the world. Create your profile and chat with
-              other developers to share your thoughts and expertise.
-            </p>
-            <button
-              className="btn btn-ghost"
-              onClick={() => setTabSelection('register')}
-            >
-              Register Now
-            </button>
+
+        <div className="container flex items-center justify-center w-full sm:h-screen mb-5 sm:mb-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 justify-center md:items-center gap-20 px-5 sm:px-10 xl:px-24 md:-mt-24">
+            <div className="col-span-1 ">
+              <h1 className="mb-12 text-white">
+                Welcome to DevLink, the social network built for developers
+              </h1>
+              <p className="mb-9 sm:mb-12 text-white">
+                We strive to be the best and biggest social network for
+                developers with users all around the world. Create your profile
+                and chat with other developers to share your thoughts and
+                expertise.
+              </p>
+              <button
+                className="btn btn-ghost"
+                onClick={() => setTabSelection('register')}
+              >
+                Register Now
+              </button>
+            </div>
+            <Auth
+              tabSelection={tabSelection}
+              setTabSelection={setTabSelection}
+            />
           </div>
-          <Auth selectTab={tabSelection} />
         </div>
       </main>
     </div>

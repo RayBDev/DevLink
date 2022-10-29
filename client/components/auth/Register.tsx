@@ -30,7 +30,7 @@ const Register = () => {
   }, [user, loadingUser]);
 
   return (
-    <div className="col-span-11 row-span-3 bg-gray-100 rounded-tr-lg rounded-b-lg py-14 px-20">
+    <div className="col-span-2 md:col-span-11 row-span-11 md:row-span-3 bg-gray-100 md:rounded-tr-lg rounded-b-lg py-14 px-5 sm:px-20">
       <h2 className="capitalize mb-5">Create your new account'</h2>
       <span className="inline-block h-1 w-2 bg-primary rounded-sm mr-1">
         &#160;

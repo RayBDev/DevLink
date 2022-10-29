@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import Signin from './Signin';
 import Forgetpw from './Forgetpw';
@@ -9,23 +9,22 @@ import RegisterIcon from '../../assets/icons/user-plus.svg';
 
 export type TabSelectionType = 'signin' | 'register' | 'forgetpw';
 
-const Auth = ({ selectTab }: { selectTab?: TabSelectionType }) => {
-  const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
+type PropTypes = {
+  tabSelection: TabSelectionType;
+  setTabSelection: React.Dispatch<React.SetStateAction<TabSelectionType>>;
+};
 
-  useEffect(() => {
-    selectTab && setTabSelection(selectTab);
-  }, [selectTab]);
-
+const Auth = ({ tabSelection, setTabSelection }: PropTypes) => {
   return (
-    <div className="grid grid-cols-12 grid-rows-3 gap-y-2 max-w-xl">
+    <div className="grid grid-cols-2 md:grid-cols-12 grid-flow-dense grid-rows-[repeat(12, minmax(0, 1fr))] md:grid-rows-3 gap-x-2 md:gap-x-0 md:gap-y-2 max-w-xl m-auto">
       {/* Sign In Tab */}
       <div
         className={`${
           tabSelection === 'signin' ? 'bg-secondary' : 'bg-gray-300'
-        } flex justify-center items-center col-span-1 transition-colors row-span-1  py-5 rounded-tl-lg rounded-bl-lg p-2`}
+        } flex justify-center items-center col-span-1 transition-colors row-span-1 md:py-5 rounded-t-lg md:rounded-tr-none md:rounded-tl-lg md:rounded-bl-lg p-2`}
       >
         <button
-          className="flex items-center -rotate-90"
+          className="flex items-center md:-rotate-90"
           onClick={() => setTabSelection('signin')}
         >
           <SigninIcon
@@ -52,10 +51,10 @@ const Auth = ({ selectTab }: { selectTab?: TabSelectionType }) => {
       <div
         className={`${
           tabSelection === 'register' ? 'bg-secondary' : 'bg-gray-300'
-        } flex justify-center items-center col-span-1 transition-colors row-span-1 py-5 rounded-tl-lg rounded-bl-lg p-2`}
+        } flex justify-center items-center col-span-1 transition-colors row-span-1 md:py-5 rounded-t-lg md:rounded-tr-none md:rounded-tl-lg md:rounded-bl-lg p-2`}
       >
         <button
-          className="flex items-center -rotate-90"
+          className="flex items-center md:-rotate-90"
           onClick={() => setTabSelection('register')}
         >
           <RegisterIcon
