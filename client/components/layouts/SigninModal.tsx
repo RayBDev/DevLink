@@ -10,14 +10,15 @@ const SignInModal = ({
   const [tabSelection, setTabSelection] = useState<TabSelectionType>('signin');
 
   return (
-    <div
-      className="fixed w-screen h-screen bg-gray-600/80"
-      onClick={() => setShowSignInModal(false)}
-    >
-      <div className="fixed w-screen h-screen flex justify-center items-center px-2 sm:px-16 md:px-32 lg:px-56 xl:px-96">
+    <>
+      <div
+        className="fixed w-screen h-screen bg-gray-600/80"
+        onClick={() => setShowSignInModal(false)}
+      />
+      <div className="fixed top-1/2 sm:left-1/2 w-screen lg:w-fit sm:-translate-x-1/2 -translate-y-1/2 px-5">
         <Auth tabSelection={tabSelection} setTabSelection={setTabSelection} />
       </div>
-    </div>
+    </>
   );
 };
 

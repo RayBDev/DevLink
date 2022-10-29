@@ -140,7 +140,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Icon */}
-        <div className="flex items-center lg:hidden ml-auto">
+        <div className="flex items-center xl:hidden ml-auto">
           <button
             className="bg-gray-100 rounded-full w-9 h-9 flex justify-center items-center mr-3 hover:fill-primary md:hidden"
             onClick={toggleSearchDropdown}
