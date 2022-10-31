@@ -126,13 +126,7 @@ const Navbar = () => {
 
       {/* Navigation Background */}
       <div className="fixed h-16 sm:h-[5.5rem] w-screen overflow-hidden">
-        <Image
-          alt="Hero"
-          src={hero}
-          layout="fill"
-          objectFit="cover"
-          quality={80}
-        />
+        <Image alt="" src={hero} layout="fill" objectFit="cover" quality={80} />
       </div>
 
       {/** Main Navigation Bar */}
