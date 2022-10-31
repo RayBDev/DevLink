@@ -79,8 +79,8 @@ const Navbar = () => {
         </li>
         <li className={`px-5 py-5 flex items-center`}>
           <UsersIcon className="mr-3 fill-gray-400" />
-          <Link href="/developers" className="hover:text-secondary text-sm">
-            Developers
+          <Link href="/developers">
+            <button className="hover:text-secondary text-sm">Developers</button>
           </Link>
         </li>
         {!state.user._id && (
