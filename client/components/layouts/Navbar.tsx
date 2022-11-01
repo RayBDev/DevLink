@@ -56,7 +56,7 @@ const Navbar = () => {
     <>
       {/* Mobile Search Box Dropdown */}
       <div
-        className={`fixed lg:hidden transform-gpu transition-all duration-700 top-16 sm:top-[5.5rem] left-0 w-full shadow-lg bg-white px-3 py-2 ${
+        className={`fixed lg:hidden transform-gpu transition-all duration-700 top-16 sm:top-[5.5rem] left-0 w-full shadow-lg bg-white px-3 py-2 z-10 ${
           showSearchDropdown ? 'translate-y-0' : '-translate-y-20'
         }`}
       >
@@ -70,7 +70,7 @@ const Navbar = () => {
 
       {/* Mobile Navigation Menu */}
       <ul
-        className={`transform-gpu transition-all duration-700 fixed top-16 sm:top-24 right-0 bg-gray-100 xl:hidden items-center w-full shadow-lg ${
+        className={`transform-gpu transition-all duration-700 fixed top-16 sm:top-24 right-0 bg-gray-100 xl:hidden items-center w-full shadow-lg z-20 ${
           showMobileLinks ? 'translate-y-0' : '-translate-y-56'
         }`}
       >
@@ -125,13 +125,13 @@ const Navbar = () => {
       </ul>
 
       {/* Navigation Background */}
-      <div className="fixed h-16 sm:h-[5.5rem] w-screen overflow-hidden">
+      <div className="fixed h-16 sm:h-[5.5rem] w-screen overflow-hidden z-30">
         <Image alt="" src={hero} layout="fill" objectFit="cover" quality={80} />
       </div>
 
       {/** Main Navigation Bar */}
       <nav
-        className={`fixed w-full py-2 sm:py-5 px-5 lg:px-10 xl:px-20 flex items-center bg-transparent ${
+        className={`fixed w-full py-2 sm:py-5 px-5 lg:px-10 xl:px-20 flex items-center bg-transparent z-40 ${
           !showMobileLinks && 'shadow-lg'
         }`}
       >
@@ -208,7 +208,7 @@ const Navbar = () => {
               <ChevronDownIcon className="fill-white" />
             </button>
             <ul
-              className={`transform-gpu transition-all duration-700 fixed top-[4.5rem] lg:right-10 xl:right-20 bg-gray-100 shadow-lg rounded-md w-64 ${
+              className={`transform-gpu transition-all duration-700 fixed top-[4.5rem] lg:right-10 xl:right-20 bg-gray-100 shadow-lg rounded-md w-64 z-50 ${
                 showUserMenuDropdown ? 'opacity-100' : 'opacity-0'
               }`}
             >
