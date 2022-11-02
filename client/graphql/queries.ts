@@ -37,3 +37,25 @@ export const GET_HANDLE = gql`
     }
   }
 `;
+
+export const GET_ALL_POSTS = gql`
+  query AllPosts {
+    allPosts {
+      user
+      text
+      name
+      avatar
+      likes {
+        user
+      }
+      comments {
+        user
+        text
+        name
+        avatar
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
