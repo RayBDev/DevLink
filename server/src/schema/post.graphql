@@ -30,6 +30,10 @@ input PostIdInput {
   post_id: ID!
 }
 
+input UserIdInput {
+  user_id: ID!
+}
+
 """
 Post input requires manually setting the name and avatar instead of populating by user id. Allows post to persist if user is deleted.
 """
@@ -71,6 +75,10 @@ type Query {
   Public query that returns a post based on the post id provided
   """
   postById(input: PostIdInput!): Post!
+  """
+  Public query that returns all posts of a user based on the user id provided
+  """
+  postsByUser(input: UserIdInput!): [Post!]!
 }
 
 # Mutation Types

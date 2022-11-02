@@ -13,7 +13,7 @@ import { Profile } from '../models/Profile';
 // @access  Public
 const allPosts = async () => {
   // Find all posts in the database and sort them by date in descending order
-  const posts = await Post.find().sort({ date: -1 });
+  const posts = await Post.find().sort({ createdAt: -1 });
 
   // If no posts are found throw an error
   if (posts.length < 1) {
@@ -38,6 +38,28 @@ const postById = async (_: void, args: PostByIdArgs) => {
   // If no post is found throw an error
   if (!post) {
     throw new UserInputError('No post found with that ID');
+  } else {
+    return post;
+  }
+};
+
+// Argument Types Received for PostById Query
+type PostsByUserArgs = {
+  input: { user_id: Types.ObjectId };
+};
+
+// @type    Query
+// @desc    Get posts by user id
+// @access  Public
+const postsByUser = async (_: void, args: PostsByUserArgs) => {
+  // Search database for post based on post id
+  const post = await Post.find({ user: args.input.user_id }).sort({
+    createdAt: -1,
+  });
+
+  // If no post is found throw an error
+  if (!post) {
+    throw new UserInputError('No post found for this user');
   } else {
     return post;
   }
@@ -313,6 +335,7 @@ const resolverMap: IResolvers = {
   Query: {
     allPosts,
     postById,
+    postsByUser,
   },
   Mutation: {
     createPost,
