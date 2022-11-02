@@ -10,3 +10,24 @@ export const REGISTER = gql`
     }
   }
 `;
+export const CREATE_POST = gql`
+  mutation CreatePost($input: PostInput!) {
+    createPost(input: $input) {
+      user
+      text
+      name
+      avatar
+      likes {
+        user
+      }
+      comments {
+        user
+        text
+        name
+        avatar
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
