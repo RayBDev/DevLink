@@ -83,7 +83,7 @@ export const GET_POST_BY_ID = gql`
 `;
 
 export const GET_POSTS_BY_USER = gql`
-  query AllPosts($input: UserIdInput!) {
+  query PostsByUser($input: UserIdInput!) {
     postsByUser(input: $input) {
       user
       text
