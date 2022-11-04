@@ -5,6 +5,8 @@ scalar URL
 # Standard Types
 type Likes {
   user: ID!
+  name: String!
+  avatar: URL
 }
 
 type Comments {
