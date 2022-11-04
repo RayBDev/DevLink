@@ -8,7 +8,7 @@
     @apply font-sans;
   }
   body {
-    @apply text-gray-900 bg-gray-200;
+    @apply text-gray-700 bg-gray-200;
   }
   h1 {
     @apply text-4xl font-bold md:font-normal md:text-5xl font-heading;
@@ -23,7 +23,7 @@
     @apply text-lg font-bold font-heading;
   }
   p {
-    @apply text-gray-800 leading-7 font-sans;
+    @apply text-gray-500 leading-7 font-sans;
   }
 }
 
