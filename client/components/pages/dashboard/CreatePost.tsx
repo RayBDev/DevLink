@@ -59,7 +59,7 @@ const CreatePost = () => {
   );
 
   return (
-    <div className="w-full px-12 py-5 relative rounded-md bg-gray-100">
+    <div className="w-full px-12 py-5 relative rounded-md bg-gray-100 mb-10">
       <label
         htmlFor="createPost"
         className="flex items-center mt-2 mb-4 font-bold font-heading cursor-pointer"
