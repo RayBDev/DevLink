@@ -139,7 +139,7 @@ const deletePost = async (
 
 // Argument Types Received for LikePost Mutation
 type LikePostArgs = {
-  input: { post_id: Types.ObjectId };
+  input: { post_id: Types.ObjectId; name: string; avatar: string };
 };
 
 // @type    Mutation
@@ -153,9 +153,11 @@ const likePost = async (
   // Check if user is logged in
   if (!user) throw new AuthenticationError('User not logged in');
 
+  let { post_id, name, avatar } = args.input;
+
   // Find post and user profile
   const profile = await Profile.findOne({ user: user._id });
-  const post = await Post.findById(args.input.post_id);
+  const post = await Post.findById(post_id);
 
   // Only allow post like if post and profile exists
   if (post && profile && post.likes) {
@@ -167,8 +169,15 @@ const likePost = async (
       throw new UserInputError('User already liked this post');
     }
 
+    // Create a new like object
+    const newLike = {
+      user: user._id,
+      name,
+      avatar,
+    };
+
     // Add user id to likes array
-    post.likes.unshift({ user: user._id });
+    post.likes.unshift(newLike);
 
     return post.save();
   } else {

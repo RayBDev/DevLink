@@ -45,6 +45,15 @@ input PostInput {
 }
 
 """
+Likes require manually setting the name and avatar instead of populating by user id. Allows likes to persist if user is deleted.
+"""
+input LikeInput {
+  post_id: ID!
+  name: String!
+  avatar: URL
+}
+
+"""
 Comments require manually setting the name and avatar instead of populating by user id. Allows comment to persist if user is deleted.
 """
 input CommentInput {
@@ -94,7 +103,7 @@ type Mutation {
   """
   A logged in user can like a post based on the post id provided. Returns the entire post.
   """
-  likePost(input: PostIdInput!): Post!
+  likePost(input: LikeInput!): Post!
   """
   A logged in user can unlike a previously liked post based on the id provided. Returns the entire post.
   """
