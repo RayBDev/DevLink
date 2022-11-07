@@ -9,29 +9,37 @@ import { AuthContext } from '../../../context/authContext';
 import WriteIcon from '../../../assets/icons/write.svg';
 import { CREATE_POST } from '../../../graphql/mutations';
 import Spinner from '../../UI/Spinner';
-import { GET_POSTS_BY_USER } from '../../../graphql/queries';
+import { GET_ALL_POSTS, GET_POSTS_BY_USER } from '../../../graphql/queries';
 
 const CreatePost = () => {
   const { state } = useContext(AuthContext);
 
-  type PostsByUser = {
-    postsByUser: {
+  type Post = {
+    user: string;
+    text: string;
+    name: string;
+    avatar: string;
+    likes: {
+      user: string;
+      name: string;
+      avatar: string;
+    };
+    comments: {
       user: string;
       text: string;
       name: string;
       avatar: string;
-      likes: {
-        user: string;
-      };
-      comments: {
-        user: string;
-        text: string;
-        name: string;
-        avatar: string;
-      };
-      createdAt: string;
-      updatedAt: string;
-    }[];
+    };
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  type PostsByUser = {
+    postsByUser: Post[];
+  };
+
+  type AllPosts = {
+    allPosts: Post[];
   };
 
   const [createPost, { loading: loadingPost, error: postError }] = useMutation(
@@ -44,6 +52,10 @@ const CreatePost = () => {
           query: GET_POSTS_BY_USER,
         });
 
+        const postData: AllPosts | null = cache.readQuery({
+          query: GET_ALL_POSTS,
+        });
+
         // Write data to the cache using the mutation result and the current cached data. The query argument is to determine the shape of the cache
         if (data && data.postsByUser) {
           // write Query to cache
@@ -51,6 +63,16 @@ const CreatePost = () => {
             query: GET_POSTS_BY_USER,
             data: {
               postsByUser: [createPost, ...data.postsByUser],
+            },
+          });
+        }
+
+        if (postData && postData.allPosts) {
+          // write Query to cache
+          cache.writeQuery({
+            query: GET_ALL_POSTS,
+            data: {
+              allPosts: [createPost, ...postData.allPosts],
             },
           });
         }
