@@ -10,10 +10,13 @@ import { AuthContext } from '../../context/authContext';
 const Dashboard: NextPageWithLayout = () => {
   const { state } = useContext(AuthContext);
   const router = useRouter();
+  const { username } = router.query;
 
   useEffect(() => {
     if (!state.user._id) router.push('/');
-  }, []);
+    if (state.user._id !== username || state.user.handle !== username)
+      router.push(`/${username}/dashboard`);
+  }, [state.user]);
 
   return (
     <section className="container">
