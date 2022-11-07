@@ -47,6 +47,8 @@ export const GET_ALL_POSTS = gql`
       avatar
       likes {
         user
+        name
+        avatar
       }
       comments {
         user
@@ -69,6 +71,8 @@ export const GET_POST_BY_ID = gql`
       avatar
       likes {
         user
+        name
+        avatar
       }
       comments {
         user
@@ -91,6 +95,8 @@ export const GET_POSTS_BY_USER = gql`
       avatar
       likes {
         user
+        name
+        avatar
       }
       comments {
         user
