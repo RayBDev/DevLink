@@ -1,12 +1,14 @@
 import React from 'react';
 
 import CreatePost from './CreatePost';
+import Posts from './Posts';
 
 const Feed = () => {
   return (
-    <div>
+    <section id="Feed">
       <CreatePost />
-    </div>
+      <Posts />
+    </section>
   );
 };
 
